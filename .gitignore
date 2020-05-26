@@ -1,0 +1,11 @@
+# Ignore test folder
+test
+
+#Ignore node modules
+node_modules
+
+#Ignore config file
+config.json
+
+#Ignore VSCode config
+.vscode
