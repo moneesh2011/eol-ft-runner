@@ -2,6 +2,8 @@
 This framework uses Selenium-webdriver, Appium & CucumberJS to run UI tests written in BDD format.
 This project is a work in progress, and not close to ready for real-time projects. Please only use for experimental purposes, until v1.0
 
+![Description poster](/icons/readme-poster.png)
+
 #### How to install
 ``` shell
 npm install eol-ft-runner --save-dev
