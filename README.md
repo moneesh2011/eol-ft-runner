@@ -23,11 +23,11 @@ npm install eol-ft-runner --save-dev
 ### Note on browser drivers
 Browser drivers are not bundled with this package. You will need to install the browser drivers (Chromedriver or Gecko Driver) - in your project using the below command:
 ``` shell
-npm install chromedriver
+npm install chromedriver --save-dev
 
 (or)
 
-npm install gecko-driver
+npm install geckodriver --save-dev
 ```
 This will allow you to control your browser driver version, based on the browser version you are testing against.
 
