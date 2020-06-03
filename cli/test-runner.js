@@ -72,7 +72,6 @@ async function runCucumberTests() {
                 if (stderr != '') {
                     console.log(`--- stderr:`.red + `\n${stderr}`);
                 }
-                if (err) throw new Error('err', err);
                 done();
             });
         });
