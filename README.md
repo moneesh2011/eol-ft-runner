@@ -55,7 +55,7 @@ In your package.json, the npm script `test` should point to the ft-runner execut
 
 `browser` can be 'chrome', 'firefox', 'safari', 'ie', 'android', 'ios'. Only chrome supported for now.
 
-`tags` are cucumber tags found on the top of a scenario inside a feature file. Tags are optional, and will execute all scenarios if not provided.
+`tags` are cucumber tags found on the top of a scenario inside a feature file. Tags are optional, and will execute all scenarios if not provided. To run multiple tags, use `--tags "@sanity @smoke @etc"`.
 
 `cores` are the number of parallel threads of execution specified in the format "--cores 3" or "--cores 10". Cores are optional, and will run on 2 cores if not provided.
 
