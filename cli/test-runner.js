@@ -4,6 +4,7 @@ const _ = require('lodash');
 const { exec } = require('child_process');
 const colors = require('colors');
 
+const { isChromeCompatible } = require('../utils/check-compatibility');
 const options = require('./cli-options');
 const Configurator = require('./configurator');
 const { processTags, processWorldParams } = require('../utils/modify-options');
@@ -57,6 +58,7 @@ async function getCucumberArgs() {
 
 async function runCucumberTests() {
     const commands = await getCucumberArgs();
+    if(global.browsers.includes('chrome')) isChromeCompatible();
     
     try {
         const done = _.after(global.browsers.length, () => {
