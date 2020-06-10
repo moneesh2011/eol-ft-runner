@@ -23,26 +23,29 @@ function getCommand(browser) {
             console.warn("Sorry, Internet Explorer (IE11) is currently not supported. Exiting..");
             process.exit(0);
         default:
-            console.error("Exiting. Unknown browser name:", browser);
+            console.error("Exiting. Unknown/Unsupported browser name:", browser);
             process.exit(0);
     }
 }
 
 function checkDriverCompatibility(browsers) {
+    let _browsers = [];
     if (!Array.isArray(browsers)) {
-        browsers = [browsers];
-    }
+        _browsers.push(browsers);
+    } else {
+        Array.prototype.push.apply(_browsers, browsers);
+    }    
 
-    if (browsers.includes("safari")) {
+    if (_browsers.includes("safari")) {
         console.log("Safari driver is pre-packaged. Skipping driver check for Safari.");
-        browsers = _.remove(browsers, (value) => {
+        _browsers = _.remove(_browsers, (value) => {
             return value !== "safari";
         });
     }
 
-    if (browsers.includes("chrome") || browsers.includes("firefox") || browsers.includes("android") || browsers.includes("ie")) {
-        for(i=0; i < browsers.length; i++) {
-            let browser = browsers[i],
+    if (_browsers.includes("chrome") || _browsers.includes("firefox") || _browsers.includes("android") || _browsers.includes("ie")) {
+        for(i=0; i < _browsers.length; i++) {
+            let browser = _browsers[i],
                 driverName = getDriverName(browser),
                 command = getCommand(browser);
 
@@ -61,7 +64,7 @@ function checkDriverCompatibility(browsers) {
             });
         }
     } else {
-        console.error("Skipping driver checks. Empty browsers array:", browsers);
+        console.error("Skipping driver checks. Empty browsers array:", _browsers);
     }
 }
 
