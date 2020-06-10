@@ -15,6 +15,7 @@ npm install eol-ft-runner --save-dev
 | Chrome  | ✅Yes  |
 | Chrome Headless  | ✅Yes  |
 | Firefox  | ✅Yes  |
+| Firefox Headless  | ✅Yes  |
 | Safari  | ✅Yes  |
 | Android Chrome  | 🛠Not Yet  |
 | iOS Safari  | 🛠Not Yet  |
@@ -41,11 +42,11 @@ Run your test with a configuration file:
 ```
 Run your test with CLI arguments:
 ``` shell
-./node_modules/eol-ft-runner/bin/ft-runner --config config.json chrome --tags @sanity --cores 2
+./node_modules/eol-ft-runner/bin/ft-runner --config config.json --browser chrome --tags @sanity --cores 2
 ```
-Run with headless chrome using `--headless` (only supported on chrome):
+Run headless using `--headless` (only supported on chrome/firefox):
 ``` shell
-./node_modules/eol-ft-runner/bin/ft-runner --config config.json chrome --tags @sanity --cores 2 --headless
+./node_modules/eol-ft-runner/bin/ft-runner --config config.json --browser chrome --tags @sanity --cores 2 --headless
 ```
 Run using npm scripts:
 ``` shell
@@ -53,7 +54,7 @@ npm run test -- --config config.json --browser chrome --tags @sanity --cores 2
 ```
 In your package.json, the npm script `test` should point to the ft-runner executable: `./node_modules/eol-ft-runner/bin/ft-runner`.
 
-`browser` can be 'chrome', 'firefox', 'safari', 'ie', 'android', 'ios'. Only chrome supported for now.
+`browser` can be 'chrome', 'firefox', 'safari', 'ie', 'android', 'ios'. IE11 is currently unsupported.
 
 `tags` are cucumber tags found on the top of a scenario inside a feature file. Tags are optional, and will execute all scenarios if not provided. To run multiple tags, use `--tags "@sanity @smoke @etc"`.
 
@@ -63,7 +64,7 @@ In your package.json, the npm script `test` should point to the ft-runner execut
 ```json
 {
     "configurations": {
-        "browser": "chrome",
+        "browser": [ "chrome" ],
         "tags": "@sanity",
         "featurePath": [ "test/features/" ],
         "stepDefinitionPath": [ "test/step_definitions/" ],

@@ -446,6 +446,7 @@ class Driver {
   }
 
   async validateInNewTabAndClose(callback) {
+    await this.sleep(500);
     const pageHandles = await this.driver.getAllWindowHandles();
     await this.driver.switchTo().window(pageHandles[1]);
     let hasError = true;

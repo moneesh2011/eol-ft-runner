@@ -1,5 +1,7 @@
 var wd = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
+const firefox = require('selenium-webdriver/firefox');
+const safari = require('selenium-webdriver/safari');
 const { setWorldConstructor, setDefaultTimeout } = require('cucumber');
 var caps = require('./desired-capabilities');
 var { Driver } = require('./driver');
@@ -30,19 +32,48 @@ function CustomWorld({ attach, parameters }) {
     commonChromeOptions.addArguments('--no-sandbox');
     commonChromeOptions.addArguments('--disable-dev-shm-usage');
 
+    const commonFirefoxOptions = new firefox.Options().windowSize({ width: 1920, height: 1080 });
+    const commonSafariOptions = new safari.Options();
+
     if (parameters.headless) {
-      this.browser = new wd.Builder()
-        .withCapabilities(desiredCapabilities)
-        .setChromeOptions(commonChromeOptions.headless())
-        .build();
-      this.browser.setDownloadPath(downloadPath); //Needed to re-enable download for headless
+      if (parameters.browser === "chrome") {
+        this.browser = new wd.Builder()
+          .withCapabilities(desiredCapabilities)
+          .setChromeOptions(commonChromeOptions.headless())
+          .build();
+        this.browser.setDownloadPath(downloadPath); //Needed to re-enable download for headless
+      } else if (parameters.browser === "firefox") {
+        this.browser = new wd.Builder()
+          .withCapabilities(desiredCapabilities)
+          .setFirefoxOptions(commonFirefoxOptions.headless())
+          .build();
+      } else if (parameters.browser === "safari") {
+        console.log('Headless mode not supported in Safari');
+        this.browser = new wd.Builder()
+          .withCapabilities(desiredCapabilities)
+          .setSafariOptions(commonSafariOptions)
+          .build();
+      }
     } else {
-      this.browser = new wd.Builder()
-        .withCapabilities(desiredCapabilities)
-        .setChromeOptions(commonChromeOptions)
-        .build();
+      if (parameters.browser === "chrome") {
+        this.browser = new wd.Builder()
+          .withCapabilities(desiredCapabilities)
+          .setChromeOptions(commonChromeOptions)
+          .build();
+      } else if (parameters.browser === "firefox") {
+        this.browser = new wd.Builder()
+          .withCapabilities(desiredCapabilities)
+          .setFirefoxOptions(commonFirefoxOptions)
+          .build();
+      } else if (parameters.browser === "safari") {
+        this.browser = new wd.Builder()
+          .withCapabilities(desiredCapabilities)
+          .setSafariOptions(commonSafariOptions)
+          .build();
+      }
     }
   }
+
   this.driver = new Driver(this.browser);
   global.driver = this.driver;
 }

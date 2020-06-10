@@ -6,7 +6,7 @@ async function processTags(browser, tag) {
 }
 
 async function processWorldParams(browserName, headlessFlag) {
-    return (headlessFlag !== undefined) ? `'{"browser":"chrome","headless":"true"}'` : `'{"browser":"${browserName}"}'`;
+    return (headlessFlag !== undefined) ? `'{"browser":"${browserName}","headless":"true"}'` : `'{"browser":"${browserName}"}'`;
 }
 
 module.exports = {

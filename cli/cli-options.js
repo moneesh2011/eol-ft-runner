@@ -14,7 +14,7 @@ module.exports = {
         type: 'array'
     },
     headless : {
-        description: 'Headless option to run in headless mode. Supported only for chrome.',
+        description: 'Headless option to run in headless mode. Supported only for chrome and firefox.',
         demandOption: false,
         requiresArg: false,
         type: 'string'
