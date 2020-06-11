@@ -2,7 +2,7 @@
 This framework uses Selenium-webdriver, Appium & CucumberJS to run UI tests written in BDD format.
 This project is a work in progress, and only ready for desktop browser testing. As we build more features, mobile and other use cases will be available soon in v1.0
 
-![Description poster](/icons/readme-poster.png)
+![Description poster](/docs/readme-poster.png)
 
 #### How to install
 ``` shell
@@ -75,10 +75,9 @@ In your package.json, the npm script `test` should point to the ft-runner execut
 ```
 Create the `config.json` file anywhere in your project, and provide its relative path as a command-line argument: `--config <relative_path_of_config.json>`.
 
-#### Differentiating desktop browser and mobile browser tests
-To indicate that a scenario is desktop-specific, you need to tag that scenario with `@desktop`, and all mobile-specific scenario as `@mobile`.
-By default, all chrome/firefox/safari tests will exclude scenarios that have `@mobile` tag and all android/ios executions will exclude scenarios that have `@desktop` tag.
-If your tests are cross-compatible with desktop & mobile, you do not need to tag them with `@desktop` or `@mobile`.
+#### Read more:
+- [Driver class methods](./docs/driver.md)
+- [Differentiating desktop browser and mobile browser tests](./docs/desktop_mobile.md)
 
 #### Sample test project
 Sample node project using eol-ft-runner: https://github.com/moneesh2011/test-eol-ft-runner

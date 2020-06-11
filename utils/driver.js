@@ -6,6 +6,9 @@ const by = (strategy, locator) => By[strategy](locator);
 const rejectWithError = err => Promise.reject(err);
 const moment = require('moment');
 
+/**
+ * this.driver class methods
+ */
 class Driver {
   constructor(driver) {
     this.driver = driver;
@@ -14,6 +17,11 @@ class Driver {
     this.timeout = 30000;
   }
 
+  /**
+   * Navigate to a particular URL, with optional verification of navigated URL
+   * @param {string} url - URL to navigate
+   * @param {boolean} checkUrl - Optional verification to check if navigation was successful within timeout
+   */
   async navigateTo(url, checkUrl = true) {
     if (process.env.BRANCH_NAME) {
       await this.driver.get(process.env.URL + 'fake-route'); // Load a fake route to allow adding of cookie
@@ -29,12 +37,17 @@ class Driver {
     await this.waitForPageLoadComplete();
   }
 
+  /**
+   * Refresh current page
+   */
   async refreshCurrentPage() {
     await this.driver.navigate().refresh();
     await this.waitForPageLoadComplete();
   }
 
-  // TODO: PRIVATE FUNCTION
+  /**
+   * Quit or close the current driver session
+   */
   close() {
     return this.driver.close();
   }
@@ -43,7 +56,7 @@ class Driver {
    * Wait for specified element(s) to appear and returns them as an array
    * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
    * @param {string} locator - value of element to search, corresponding to locator strategy
-   * @returns {[WebElementPromise]} Returns the array of WebElementPromises if found;
+   * @returns {*} Returns the array of WebElementPromises if found;
    */
   // TODO: check if needed
   async waitForElements(strategy, locator, timeout = this.timeout) {
@@ -71,6 +84,12 @@ class Driver {
     return await this.driver.wait(until.elementLocated(by(strategy, locator)), this.timeout, msg);
   }
 
+  /**
+   * Click on an element in the webpage
+   * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
+   * @param {string} locator - value of element to search, corresponding to locator strategy
+   * @param {Function} caller - Optional parameter to indicate the function name that called this method
+   */
   async click(strategy, locator, caller) {
     try {
       const elements = await this.waitForElements(strategy, locator);
@@ -96,6 +115,12 @@ class Driver {
     }
   }
 
+  /**
+   * Type value into the specified input field element in the webpage
+   * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
+   * @param {string} locator - value of input field element to search, corresponding to locator strategy
+   * @param {string} value - Value to be entered in the input field
+   */
   async type(strategy, locator, value) {
     try {
       const element = await this.waitForElements(strategy, locator);
@@ -106,6 +131,10 @@ class Driver {
     }
   }
 
+  /**
+   * Custom function to enter date, month and year value in a 3-split dd-mm-YYYY date field
+   * @param {string} baseId - Id value of the element based on 'id' locator strategy
+   */
   async fillInDate(baseId) {
     try {
       const day = await this.waitForElements('id', baseId + '-day');
@@ -120,6 +149,11 @@ class Driver {
     }
   }
 
+  /**
+   * Clear value present in an input field element in the webpage
+   * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
+   * @param {string} locator - value of input field element to search, corresponding to locator strategy
+   */
   async clear(strategy, locator) {
     let textFieldValue = '';
     try {
@@ -199,6 +233,12 @@ class Driver {
     }
   }
 
+  /**
+   * Custom function to verify multiple text values in multiple elements discovered using a common locator strategy
+   * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
+   * @param {string} locator - value of element to search, corresponding to locator strategy
+   * @param {Array} stringArr - Array of text values to be verified in the discovered elements
+   */
   async checkTextsAre(strategy, locator, stringArr) {
     try {
       const elements = await this.waitForElements(strategy, locator);
@@ -224,6 +264,13 @@ class Driver {
     }
   }
 
+  /**
+   * Waits until the element's innertext value is equal to expected text, within timeout
+   * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
+   * @param {string} locator - value of element to search, corresponding to locator strategy
+   * @param {string} value - expected text value for verification
+   * @param {number} timeout - optional timeout that overrides the default webdriver timeout
+   */
   waitUntilTextIs(strategy, locator, value, timeout = this.timeout) {
     return this.waitForElements(strategy, locator, timeout)
       .then(async element => {
@@ -251,6 +298,12 @@ class Driver {
       });
   }
 
+  /**
+   * Waits until the element's input value is equal to expected text, within timeout
+   * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
+   * @param {string} locator - value of element to search, corresponding to locator strategy
+   * @param {string} value - expected input text value for verification
+   */
   waitUntilInputIs(strategy, locator, value) {
     return this.waitForElements(strategy, locator)
       .then(async element => {
@@ -278,6 +331,12 @@ class Driver {
       });
   }
 
+  /**
+   * Waits until a certain number of elements for the specified locator strategy is found, until timeout
+   * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
+   * @param {string} locator - value of element to search, corresponding to locator strategy
+   * @param {number} count - expected number of elements
+   */
   async waitUntilNumberOfElementsFound(strategy, locator, count) {
     return await this.driver
       .wait(
@@ -294,6 +353,13 @@ class Driver {
       });
   }
 
+  /**
+   * Waits until the element's innertext value contains the expected text, within timeout
+   * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
+   * @param {string} locator - value of element to search, corresponding to locator strategy
+   * @param {string} value - expected text value
+   * @param {number} timeout - optional timeout, overriding the global driver timeout
+   */
   waitUntilTextContains(strategy, locator, value, timeout = this.timeout) {
     return this.waitForElements(strategy, locator, timeout)
       .then(async element => {
@@ -330,10 +396,10 @@ class Driver {
   }
 
   /**
-   *
-   * @param {strategy} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
-   * @param {*} locator - value of element to search, corresponding to locator strategy
-   * @returns {[WebElementPromise]} Returns the array of WebElementPromises if found;
+   * Finds all elements with provided locator strategy and returns them as an WebElement array
+   * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
+   * @param {string} locator - value of element to search, corresponding to locator strategy
+   * @returns {*} Returns the array of WebElementPromises if found;
    */
   findElements(strategy, locator) {
     return this.driver.findElements(by(strategy, locator));
@@ -350,7 +416,7 @@ class Driver {
   /**
    * Function to validate whether an element is visible on the browser viewport (works on desktop/ios/android)
    * @param {WebElement} element - Element to search on the target browser
-   * @returns {Boolean} Return true if found; or else, false
+   * @returns {boolean} Return true if found; or else, false
    */
   isElementVisible(element) {
     return this.driver.executeScript(
@@ -362,6 +428,10 @@ class Driver {
     );
   }
 
+  /**
+   * Select radio button identified by id locator strategy
+   * @param {string} id - Id value of the element based on 'id' locator strategy
+   */
   selectRadioButtonById(id) {
     return this.waitForElements('id', id)
       .then(() => {
@@ -370,6 +440,10 @@ class Driver {
       .catch(rejectWithError);
   }
 
+  /**
+   * Select checkbox element identified by id locator strategy
+   * @param {string} id - Id value of the element based on 'id' locator strategy
+   */
   selectCheckboxById(id) {
     return this.waitForElements('id', id)
       .then(() => {
@@ -378,14 +452,27 @@ class Driver {
       .catch(rejectWithError);
   }
 
+  /**
+   * Waits for checkbox element to become visible and selectable, identified by id locator strategy
+   * @param {string} id - Id value of the element based on 'id' locator strategy
+   */
   waitForCheckboxToBeSelected(id) {
     return this.waitForElementToBeVisible('css', `.checked.checkbox > #${id}`).catch(rejectWithError);
   }
 
+  /**
+   * Waits for checkbox element to become disabled, identified by id locator strategy
+   * @param {string} id - Id value of the element based on 'id' locator strategy
+   */
   waitForCheckboxToBeDisabled(id) {
     return this.waitForElementToBeVisible('css', `.disabled.checkbox > #${id}`).catch(rejectWithError);
   }
 
+  /**
+   * Select an item in the dropbox element, identified by id locator strategy
+   * @param {string} parentId - Id value of the element based on 'id' locator strategy
+   * @param {number} itemIndex - index value of the dropdown values
+   */
   selectDropdownItem(parentId, itemIndex) {
     return this.click('id', parentId)
       .then(async () => {
@@ -411,6 +498,10 @@ class Driver {
     );
   }
 
+  /**
+   * Waits until the URL contains the specified prefix
+   * @param {string} prefix - part of the url for verification
+   */
   waitUntilUrlContains(prefix) {
     let currentUrl = '';
     return this.driver
@@ -426,6 +517,10 @@ class Driver {
       });
   }
 
+  /**
+   * Waits until the URL of the webpage matches the expected url value
+   * @param {string} url - entire URL string to be verifieds
+   */
   async waitUntilUrlIs(url) {
     let currentUrl = '';
     return this.driver
@@ -441,10 +536,18 @@ class Driver {
       });
   }
 
+  /**
+   * Opens a new tab with specified URL
+   * @param {string} url - URL to be opened
+   */
   openNewTab(url) {
     return this.driver.executeScript(`window.open("${url}");`);
   }
 
+  /**
+   * Waits for new tab to open and callback is called on success
+   * @param {Function} callback - callback function to be called after new tab is opened and validated
+   */
   async validateInNewTabAndClose(callback) {
     await this.sleep(500);
     const pageHandles = await this.driver.getAllWindowHandles();
@@ -472,6 +575,11 @@ class Driver {
     await this.driver.switchTo().window(pageHandles[0]);
   }
 
+  /**
+   * Waits for element to become stale, until timeout
+   * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
+   * @param {string} locator - value of element to search, corresponding to locator strategy
+   */
   async waitForElementToBeNotVisible(strategy, locator) {
     return await this.driver.wait(
       new Condition(`Wait till element is no longer visible`, async () => {
@@ -482,6 +590,11 @@ class Driver {
     );
   }
 
+  /**
+   * Waits for element to be attached to the webpage and become visible, until timeout
+   * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
+   * @param {string} locator - value of element to search, corresponding to locator strategy
+   */
   async waitForElementToBeVisible(strategy, locator) {
     return await this.driver.wait(
       new Condition(`Wait till element to be visible`, async () => {
@@ -494,6 +607,7 @@ class Driver {
 
   /**
    * Get browser console logs
+   * @returns {string} - Entire browser logs in preserved state
    */
   async getBrowserConsoleLogs() {
     const logs = await this.driver
@@ -509,6 +623,12 @@ class Driver {
     return logString;
   }
 
+  /**
+   * Custome function to upload a file using an element, identified by specified locator strategy
+   * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
+   * @param {string} locator - value of element to search, corresponding to locator strategy
+   * @param {string} filepath - path of the file to be uploaded
+   */
   uploadFile(strategy, locator, filepath) {
     return this.waitForElements(strategy, locator)
       .then(async elements => {
@@ -517,6 +637,14 @@ class Driver {
       .catch(rejectWithError);
   }
 
+  /**
+   * Custom function to verify if element is stale and execute callback if yes; if not, fail with message
+   * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
+   * @param {string} locator - value of element to search, corresponding to locator strategy
+   * @param {string} fxName - name of function
+   * @param {Object} error - error object with name parameter and message
+   * @param {Function} callback - callback function to be called if error.name is StaleElementReferenceError
+   */
   async throwErrorWithDetailsIfNotStale(strategy, locator, fxName, error, callback) {
     if (error.name === 'StaleElementReferenceError') {
       callback();
@@ -529,6 +657,10 @@ class Driver {
     }
   }
 
+  /**
+   * Waits for cookie to be expected value
+   * @param {string} title - key name of cookie in browser
+   */
   async waitForCookie(title) {
     let logCookie = '';
     let numberOfTimesChecked = 0;
@@ -560,6 +692,10 @@ class Driver {
     return cookieValue;
   }
 
+  /**
+   * Returns cookie value
+   * @param {string} title - key name of cookie in browser
+   */
   async getCookie(title) {
     const cookie = await this.driver.manage().getCookie(title);
     if (cookie !== null) {
@@ -569,6 +705,10 @@ class Driver {
     }
   }
 
+  /**
+   * Waits for expected cookie to be cleared, until timeout
+   * @param {string} title - key name of cookie in browser
+   */
   async waitForCookieToClear(title) {
     return this.driver
       .wait(
@@ -591,6 +731,11 @@ class Driver {
       });
   }
 
+  /**
+   * Waits for cookie to be expected value, until timeout
+   * @param {string} title - key name of cookie in browser
+   * @param {string} value - expected value of cookie key
+   */
   async waitForCookieToEqual(title, value) {
     let logCookie = '';
 
@@ -624,8 +769,8 @@ class Driver {
   // =============================================================================
 
   /**
-   *
-   * @param {object} error Must be an object so that the method can add additional fields
+   * Error Processor and throws error back up to the runner
+   * @param {Object} error Must be an object so that the method can add additional fields
    * @param {any} errorStack Must be an object so that the method can add additional fields
    */
   async processAndThrowError(error, errorStack) {
