@@ -69,7 +69,10 @@ function checkDriverCompatibility(browsers) {
 }
 
 async function example(browser) {
-    const options = (browser === "chrome") ? new chrome.Options().headless() : new firefox.Options().headless();
+    const options = (browser === "chrome") ? 
+        new chrome.Options().addArguments('--no-sandbox').addArguments('--disable-dev-shm-usage').headless() : 
+        new firefox.Options().headless();
+
     try {
         const driver = await new Builder()
             .forBrowser(browser)
