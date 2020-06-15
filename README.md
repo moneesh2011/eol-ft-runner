@@ -78,6 +78,7 @@ Create the `config.json` file anywhere in your project, and provide its relative
 #### Read more:
 - [Driver class methods](./docs/driver.md)
 - [Differentiating desktop browser and mobile browser tests](./docs/desktop_mobile.md)
+- [Debugging tests in VSCode](./docs/vscode_debug.md)
 
 #### Sample test project
 Sample node project using eol-ft-runner: https://github.com/moneesh2011/test-eol-ft-runner
