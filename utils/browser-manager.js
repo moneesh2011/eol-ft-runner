@@ -7,18 +7,6 @@ const closeSafariInstances = () => {
   }
 };
 
-const closeIEDriverInstances = () => {
-  const exitIEDriverCmd = "taskkill /F /IM IEDriverServer.exe";
-  execSync(exitIEDriverCmd);
-};
-
-const closeIEBrowserInstances = () => {
-  const exitIEBrowserCmd = "taskkill /F /IM iexplore.exe";
-  execSync(exitIEBrowserCmd);
-};
-
 module.exports = {
-  closeSafariInstances,
-  closeIEDriverInstances,
-  closeIEBrowserInstances
+  closeSafariInstances
 };
