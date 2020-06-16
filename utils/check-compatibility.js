@@ -16,7 +16,7 @@ function getCommand(browser) {
         case "chrome":
             return `chromedriver -v`;
         case "firefox":
-            return `geckodriver --version | awk 'FNR == 1'`;
+            return (global.platform === "win32") ? `geckodriver --version | findstr "+"` : `geckodriver --version | awk 'FNR == 1'`;
         case "android":
             return `chromedriver -v`;
         case "ie":
@@ -74,16 +74,30 @@ async function example(browser) {
         new firefox.Options().headless();
 
     try {
-        const driver = await new Builder()
+        let runner = await new Builder()
             .forBrowser(browser)
-            .withCapabilities(options)
-            .build();
+            .withCapabilities(options);
+        runner = await setWinDriverPath(runner);
+        const driver = runner.build();
         await driver.get("about:blank"); //Using about:blank to avoid geo-locked content access issues
         await driver.close();
         return true;
     } catch(e) {
         console.error(e.message);
         return false;
+    }
+}
+
+async function setWinDriverPath(runner, browser) {
+    if (global.platform === 'win32') {
+        if (browser === 'chrome') {
+            return runner.setChromeService(new chrome.ServiceBuilder(require('chromedriver').path));
+        } else if (browser === 'firefox') {
+            return runner.setChromeService(new chrome.ServiceBuilder(require('geckodriver').path));
+        }
+    }
+    else {
+        return runner;
     }
 }
 

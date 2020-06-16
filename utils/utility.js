@@ -29,14 +29,14 @@ function millisToMinutesAndSeconds(millis) {
 }
 
 const createFolder = (reportsDir) => {
-  const dirPath = reportsDir.replace('\\', '')
+  const dirPath = (global.platform === 'win32') ? reportsDir : reportsDir.replace('\\', '');
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath)
   }
 }
 
 const waitForReport = (reportsDir) => {
-  const filePath = reportsDir.replace('\\', '')
+  const filePath = (global.platform === 'win32') ? reportsDir : reportsDir.replace('\\', '');
   const start = Date.now();
   const content = () => {
     return fs.readFileSync(filePath, { encoding: 'utf8' });
@@ -57,7 +57,7 @@ const waitForReport = (reportsDir) => {
 };
 
 const mergeReports = (browsers, reportsDir) => {
-  const reportsPath = reportsDir.replace('\\', '')
+  const reportsPath = (global.platform === 'win32') ? reportsDir : reportsDir.replace('\\', '');
   let output = [];
   browsers.forEach(browser => {
     const jsonFile = `${reportsPath}/cucumber-report-${browser}.json`;

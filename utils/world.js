@@ -7,6 +7,19 @@ var caps = require('./desired-capabilities');
 var { Driver } = require('./driver');
 const fs = require('fs');
 
+function setWinDriverPath(runner, browser) {
+  if (process.platform === 'win32') {
+    if (browser === 'chrome') {
+      return runner.setChromeService(new chrome.ServiceBuilder(require('chromedriver').path));
+    } else if (browser === 'firefox') {
+      return runner.setChromeService(new chrome.ServiceBuilder(require('geckodriver').path));
+    }
+  }
+  else {
+    return runner;
+  }
+}
+
 function CustomWorld({ attach, parameters }) {
   this.attach = attach;
 
@@ -37,16 +50,18 @@ function CustomWorld({ attach, parameters }) {
 
     if (parameters.headless) {
       if (parameters.browser === "chrome") {
-        this.browser = new wd.Builder()
+        let runner = new wd.Builder()
           .withCapabilities(desiredCapabilities)
-          .setChromeOptions(commonChromeOptions.headless())
-          .build();
+          .setChromeOptions(commonChromeOptions.headless());
+        runner = setWinDriverPath(runner, parameters.browser);
+        this.browser = runner.build();
         this.browser.setDownloadPath(downloadPath); //Needed to re-enable download for headless
       } else if (parameters.browser === "firefox") {
-        this.browser = new wd.Builder()
+        let runner = new wd.Builder()
           .withCapabilities(desiredCapabilities)
-          .setFirefoxOptions(commonFirefoxOptions.headless())
-          .build();
+          .setFirefoxOptions(commonFirefoxOptions.headless());
+        runner = setWinDriverPath(runner, "firefox");
+        this.browser = runner.build();
       } else if (parameters.browser === "safari") {
         console.log('Headless mode not supported in Safari');
         this.browser = new wd.Builder()
@@ -56,15 +71,17 @@ function CustomWorld({ attach, parameters }) {
       }
     } else {
       if (parameters.browser === "chrome") {
-        this.browser = new wd.Builder()
+        let runner = new wd.Builder()
           .withCapabilities(desiredCapabilities)
-          .setChromeOptions(commonChromeOptions)
-          .build();
+          .setChromeOptions(commonChromeOptions);
+        runner = setWinDriverPath(runner, "chrome");
+        this.browser = runner.build();
       } else if (parameters.browser === "firefox") {
-        this.browser = new wd.Builder()
+        let runner = new wd.Builder()
           .withCapabilities(desiredCapabilities)
-          .setFirefoxOptions(commonFirefoxOptions)
-          .build();
+          .setFirefoxOptions(commonFirefoxOptions);
+        runner = setWinDriverPath(runner, "firefox");
+        this.browser = runner.build();
       } else if (parameters.browser === "safari") {
         this.browser = new wd.Builder()
           .withCapabilities(desiredCapabilities)

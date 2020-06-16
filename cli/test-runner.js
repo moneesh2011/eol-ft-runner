@@ -10,6 +10,8 @@ const Configurator = require('./configurator');
 const { processTags, processWorldParams } = require('../utils/modify-options');
 const { createFolder, mergeReports } = require('../utils/utility');
 
+global.platform = process.platform;
+
 async function getCucumberArgs() {
     const { argv } = yargs
         .usage('eol-ft-runner [options]')
@@ -25,8 +27,8 @@ async function getCucumberArgs() {
     const projDir = process.cwd().replace(/(\s+)/g, '\\$1');
     const nodeCwd = path.resolve(__dirname).replace(/(\s+)/g, '\\$1');
     
-    const cucumberExePath = projDir + '/node_modules/.bin/cucumber-js';
-    global.reportsPath = projDir + "/" + configOptions.reportFolderPath;
+    const cucumberExePath = path.normalize(projDir + '/node_modules/.bin/cucumber-js');
+    global.reportsPath = path.normalize(projDir + "/" + configOptions.reportFolderPath);
     createFolder(global.reportsPath);
     for (i=0; i < configOptions.browser.length; i++) {
         const tags = await processTags(configOptions.browser[i], configOptions.tags);
@@ -34,19 +36,19 @@ async function getCucumberArgs() {
         
         cukeArgs.push([
             cucumberExePath,
-            `${projDir}/${configOptions.featurePath}`,
+            path.normalize(`${projDir}/${configOptions.featurePath}`),
             '--require',
-            `${projDir}/${configOptions.stepDefinitionPath}`,
+            path.normalize(`${projDir}/${configOptions.stepDefinitionPath}`),
             '--require',
-            `${nodeCwd}/../utils/hooks.js`,
+            path.normalize(`${nodeCwd}/../utils/hooks.js`),
             '--require',
-            `${projDir}/${configOptions.supportFolderPath}`,
+            path.normalize(`${projDir}/${configOptions.supportFolderPath}`),
             '--require',
-            `${nodeCwd}/../utils/world.js`,
+            path.normalize(`${nodeCwd}/../utils/world.js`),
             '--tags',
             `"${tags}"`,
             '--format',
-            `json:${projDir}/${configOptions.reportFolderPath}/cucumber-report-${configOptions.browser[i]}.json`,
+            path.normalize(`json:${projDir}/${configOptions.reportFolderPath}/cucumber-report-${configOptions.browser[i]}.json`),
             '--parallel',
             configOptions.cores,
             '--world-parameters',
