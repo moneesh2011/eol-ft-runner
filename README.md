@@ -10,18 +10,19 @@ npm install eol-ft-runner --save-dev
 ```
 
 #### Browser Support status
-| Browser  | Supported |
-| ------------- | ------------- |
-| Chrome  | ✅Yes  |
-| Chrome Headless  | ✅Yes  |
-| Firefox  | ✅Yes  |
-| Firefox Headless  | ✅Yes  |
-| Safari  | ✅Yes  |
-| Android Chrome  | 🛠Not Yet  |
-| iOS Safari  | 🛠Not Yet  |
-| Internet Explorer  | ❌No  |
-| Opera  | ❌No  |
-| Brave  | ❌No  |
+| Browser  | macOS/Linux | Windows |
+| ------------- | ------------- | ------------- |
+| Chrome  | ✅Yes  | ✅Yes  |
+| Chrome Headless  | ✅Yes  | ✅Yes  |
+| Firefox  | ✅Yes  | ✅Yes  |
+| Firefox Headless  | ✅Yes  | ✅Yes  |
+| Safari  | ✅Yes  | ⛔️N/A |
+| Edge  | 🛠Not Yet  | 🛠Not Yet  |
+| Android Chrome  | 🛠Not Yet  | 🛠Not Yet  |
+| iOS Safari  | 🛠Not Yet  | ⛔️N/A |
+| Internet Explorer  | ⛔️N/A  | 🛠Not Yet  |
+| Opera  | ❌No  | ❌No  |
+| Brave  | ❌No  | ❌No  |
 
 ### Note on browser drivers
 Browser drivers are not bundled with this package. You will need to install the browser drivers (Chromedriver or Gecko Driver) - in your project using the below command:
@@ -73,7 +74,7 @@ In your package.json, the npm script `test` should point to the ft-runner execut
     }
 }
 ```
-Create the `config.json` file anywhere in your project, and provide its relative path as a command-line argument: `--config <relative_path_of_config.json>`.
+Create the `config.json` file anywhere in your project, and provide its relative path as a command-line argument: `--config <relative_path_of_config.json>`. For Windows, replace all instances of backslashes(/) with double forward-slashes(\\\\).
 
 #### Read more:
 - [Driver class methods](./docs/driver.md)
