@@ -3,9 +3,13 @@ const firefox = require('selenium-webdriver/firefox');
 const edge = require('selenium-webdriver/edge');
 const { Builder } = require('selenium-webdriver');
 const { exec } = require('child_process');
+const path = require('path');
 const _ = require('lodash');
 
 const edgeDriverPath = "node_modules/@sitespeed.io/edgedriver/vendor/msedgedriver";
+const edgeOSDriverPath = (process.platform === "win32") ? `${edgeDriverPath}.exe` : edgeDriverPath;
+const projPath = process.cwd().replace(/(\s+)/g, '\\$1');
+const fullEdgeDriverPath = path.normalize(projPath + '/' + edgeOSDriverPath);
 
 function getDriverName(browser) {
     if ((browser === "chrome") || (browser === "android")) return "Chromedriver";
@@ -24,7 +28,7 @@ function getCommand(browser) {
         case "android":
             return `chromedriver -v`;
         case "edge":
-            return (global.platform === "win32") ? `node ${edgeDriverPath} -v` : `./${edgeDriverPath} -v`;
+            return (global.platform === "win32") ? `${fullEdgeDriverPath} -v` : `./${edgeDriverPath} -v`;
         case "ie":
             console.warn("Sorry, Internet Explorer (IE11) is currently not supported. Exiting..");
             process.exit(0);
@@ -92,7 +96,7 @@ async function example(browser) {
             runner = await setWinDriverPath(runner, browser);
             driver = runner.build();
         } else {
-            const service = await new edge.ServiceBuilder(edgeDriverPath).setPort(5555).build();
+            const service = await new edge.ServiceBuilder(fullEdgeDriverPath).setPort(5555).build();
             driver = edge.Driver.createSession(options, service);
         }
         await driver.get("about:blank"); //Using about:blank to avoid geo-locked content access issues
