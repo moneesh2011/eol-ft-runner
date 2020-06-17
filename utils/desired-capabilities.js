@@ -12,6 +12,9 @@ module.exports = {
   ie: {
     browserName: 'internet explorer'
   },
+  edge: {
+    browserName: 'MicrosoftEdge'
+  },
   android: {
     platformName: 'Android',
     platformVersion: '9',
