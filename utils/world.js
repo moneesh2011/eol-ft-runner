@@ -53,7 +53,7 @@ function CustomWorld({ attach, parameters }) {
         let runner = new wd.Builder()
           .withCapabilities(desiredCapabilities)
           .setChromeOptions(commonChromeOptions.headless());
-        runner = setWinDriverPath(runner, parameters.browser);
+        runner = setWinDriverPath(runner, "chrome");
         this.browser = runner.build();
         this.browser.setDownloadPath(downloadPath); //Needed to re-enable download for headless
       } else if (parameters.browser === "firefox") {

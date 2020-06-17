@@ -77,7 +77,7 @@ async function example(browser) {
         let runner = await new Builder()
             .forBrowser(browser)
             .withCapabilities(options);
-        runner = await setWinDriverPath(runner);
+        runner = await setWinDriverPath(runner, browser);
         const driver = runner.build();
         await driver.get("about:blank"); //Using about:blank to avoid geo-locked content access issues
         await driver.close();
