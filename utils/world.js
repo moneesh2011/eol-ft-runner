@@ -44,6 +44,11 @@ function CustomWorld({ attach, parameters }) {
     });
     commonChromeOptions.addArguments('--no-sandbox');
     commonChromeOptions.addArguments('--disable-dev-shm-usage');
+    if (process.platform === 'win32') {
+      commonChromeOptions.addArguments('--no-proxy-server');
+      commonChromeOptions.addArguments(`--proxy-server='direct://'`);
+      commonChromeOptions.addArguments('--proxy-bypass-list=*');
+    }
 
     const commonFirefoxOptions = new firefox.Options().windowSize({ width: 1920, height: 1080 });
     const commonSafariOptions = new safari.Options();
