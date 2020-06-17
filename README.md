@@ -17,7 +17,8 @@ npm install eol-ft-runner --save-dev
 | Firefox  | ✅Yes  | ✅Yes  |
 | Firefox Headless  | ✅Yes  | ✅Yes  |
 | Safari  | ✅Yes  | ⛔️N/A |
-| Edge  | 🛠Not Yet  | 🛠Not Yet  |
+| Edge  | ✅Yes | 🛠Not Yet  |
+| Edge Headless | 🛠Not Yet  | 🛠Not Yet  |
 | Android Chrome  | 🛠Not Yet  | 🛠Not Yet  |
 | iOS Safari  | 🛠Not Yet  | ⛔️N/A |
 | Internet Explorer  | ⛔️N/A  | 🛠Not Yet  |
@@ -25,13 +26,17 @@ npm install eol-ft-runner --save-dev
 | Brave  | ❌No  | ❌No  |
 
 ### Note on browser drivers
-Browser drivers are not bundled with this package. You will need to install the browser drivers (Chromedriver or Gecko Driver) - in your project using the below command:
+Browser drivers are not bundled with this package. You will need to install the browser drivers (Chromedriver or Gecko Driver or Edge Driver) - in your project using the below command:
 ``` shell
 npm install chromedriver --save-dev
 
 (or)
 
 npm install geckodriver --save-dev
+
+(or)
+
+npm install @sitespeed.io/edgedriver --save-dev
 ```
 This will allow you to control your browser driver version, based on the browser version you are testing against.
 

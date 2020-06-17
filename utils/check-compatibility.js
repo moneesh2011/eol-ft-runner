@@ -1,12 +1,16 @@
 const chrome = require('selenium-webdriver/chrome');
 const firefox = require('selenium-webdriver/firefox');
+const edge = require('selenium-webdriver/edge');
 const { Builder } = require('selenium-webdriver');
 const { exec } = require('child_process');
 const _ = require('lodash');
 
+const edgeDriverPath = "node_modules/@sitespeed.io/edgedriver/vendor/msedgedriver";
+
 function getDriverName(browser) {
     if ((browser === "chrome") || (browser === "android")) return "Chromedriver";
     else if (browser === "firefox") return "Geckodriver";
+    else if (browser === "edge") return "MSEdgeDriver";
     else if (browser === "ie") return "IEDriver";
     else return "Unknown";
 }
@@ -19,6 +23,8 @@ function getCommand(browser) {
             return (global.platform === "win32") ? `geckodriver --version | findstr "+"` : `geckodriver --version | awk 'FNR == 1'`;
         case "android":
             return `chromedriver -v`;
+        case "edge":
+            return (global.platform === "win32") ? `node ${edgeDriverPath} -v` : `./${edgeDriverPath} -v`;
         case "ie":
             console.warn("Sorry, Internet Explorer (IE11) is currently not supported. Exiting..");
             process.exit(0);
@@ -43,7 +49,7 @@ function checkDriverCompatibility(browsers) {
         });
     }
 
-    if (_browsers.includes("chrome") || _browsers.includes("firefox") || _browsers.includes("android") || _browsers.includes("ie")) {
+    if (_browsers.includes("chrome") || _browsers.includes("firefox") || _browsers.includes("android") || _browsers.includes("ie") || _browsers.includes("edge")) {
         for(i=0; i < _browsers.length; i++) {
             let browser = _browsers[i],
                 driverName = getDriverName(browser),
@@ -69,16 +75,26 @@ function checkDriverCompatibility(browsers) {
 }
 
 async function example(browser) {
-    const options = (browser === "chrome") ? 
-        new chrome.Options().addArguments('--no-sandbox').addArguments('--disable-dev-shm-usage').headless() : 
-        new firefox.Options().headless();
+    let options, driver;
+    if (browser === "chrome") {
+        options = new chrome.Options().addArguments('--no-sandbox').addArguments('--disable-dev-shm-usage').headless();
+    } else if (browser === "firefox") {
+        options = new firefox.Options().headless();
+    } else if (browser === "edge") {
+        options = new edge.Options();
+    }
 
     try {
-        let runner = await new Builder()
-            .forBrowser(browser)
-            .withCapabilities(options);
-        runner = await setWinDriverPath(runner, browser);
-        const driver = runner.build();
+        if (browser !== 'edge') {
+            let runner = await new Builder()
+                .forBrowser(browser)
+                .withCapabilities(options);
+            runner = await setWinDriverPath(runner, browser);
+            driver = runner.build();
+        } else {
+            const service = await new edge.ServiceBuilder(edgeDriverPath).setPort(5555).build();
+            driver = edge.Driver.createSession(options, service);
+        }
         await driver.get("about:blank"); //Using about:blank to avoid geo-locked content access issues
         await driver.close();
         return true;

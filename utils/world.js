@@ -2,10 +2,12 @@ var wd = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const firefox = require('selenium-webdriver/firefox');
 const safari = require('selenium-webdriver/safari');
+const edge = require('selenium-webdriver/edge');
 const { setWorldConstructor, setDefaultTimeout } = require('cucumber');
 var caps = require('./desired-capabilities');
 var { Driver } = require('./driver');
 const fs = require('fs');
+const edgeDriverPath = require('@sitespeed.io/edgedriver').binPath();
 
 function setWinDriverPath(runner, browser) {
   if (process.platform === 'win32') {
@@ -73,6 +75,13 @@ function CustomWorld({ attach, parameters }) {
           .withCapabilities(desiredCapabilities)
           .setSafariOptions(commonSafariOptions)
           .build();
+      } else if (parameters.browser === "edge") {
+        console.log('Headless mode not supported in Edge yet.');
+        const service = new edge.ServiceBuilder(edgeDriverPath)
+          .setPort(5555)
+          .build();
+        const options = new edge.Options();
+        this.browser = edge.Driver.createSession(options, service);
       }
     } else {
       if (parameters.browser === "chrome") {
@@ -92,6 +101,12 @@ function CustomWorld({ attach, parameters }) {
           .withCapabilities(desiredCapabilities)
           .setSafariOptions(commonSafariOptions)
           .build();
+      } else if (parameters.browser === "edge") {
+        const service = new edge.ServiceBuilder(edgeDriverPath)
+          .setPort(5555)
+          .build();
+        const options = new edge.Options();
+        this.browser = edge.Driver.createSession(options, service);
       }
     }
   }
