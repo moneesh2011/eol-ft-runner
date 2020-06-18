@@ -7,7 +7,8 @@ const browserImgSrc = {
   safari: 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/safari-32.png',
   ie: 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/internet_explorer-32.png',
   android: 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/android-32.png',
-  ios: 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/apple-32.png'
+  ios: 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/apple-32.png',
+  edge: 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/edge-32.png'
 };
 
 const getPlatformName = async (wd) => {

@@ -60,7 +60,7 @@ npm run test -- --config config.json --browser chrome --tags @sanity --cores 2
 ```
 In your package.json, the npm script `test` should point to the ft-runner executable: `./node_modules/eol-ft-runner/bin/ft-runner`.
 
-`browser` can be 'chrome', 'firefox', 'safari', 'ie', 'android', 'ios'. IE11 is currently unsupported.
+`browser` can be 'chrome', 'firefox', 'safari', 'edge'.
 
 `tags` are cucumber tags found on the top of a scenario inside a feature file. Tags are optional, and will execute all scenarios if not provided. To run multiple tags, use `--tags "@sanity @smoke @etc"`.
 
@@ -79,7 +79,7 @@ In your package.json, the npm script `test` should point to the ft-runner execut
     }
 }
 ```
-Create the `config.json` file anywhere in your project, and provide its relative path as a command-line argument: `--config <relative_path_of_config.json>`. For Windows, replace all instances of backslashes(/) with double forward-slashes(\\\\).
+Create the `config.json` file anywhere in your project, and provide its relative path as a command-line argument: `--config <relative_path_of_config.json>`. For Windows, replace all instances of forward-slashes(/) each with 2 backslashes(\\).
 
 #### Read more:
 - [Driver class methods](./docs/driver.md)
