@@ -7,7 +7,6 @@ const { setWorldConstructor, setDefaultTimeout } = require('cucumber');
 var caps = require('./desired-capabilities');
 var { Driver } = require('./driver');
 const fs = require('fs');
-const edgeDriverPath = require('@sitespeed.io/edgedriver').binPath();
 
 function setWinDriverPath(runner, browser) {
   if (process.platform === 'win32') {
@@ -77,6 +76,7 @@ function CustomWorld({ attach, parameters }) {
           .build();
       } else if (parameters.browser === "edge") {
         console.log('Headless mode not supported in Edge yet.');
+        const edgeDriverPath = require('@sitespeed.io/edgedriver').binPath();
         const service = new edge.ServiceBuilder(edgeDriverPath)
           .setPort(5555)
           .build();
@@ -102,6 +102,7 @@ function CustomWorld({ attach, parameters }) {
           .setSafariOptions(commonSafariOptions)
           .build();
       } else if (parameters.browser === "edge") {
+        const edgeDriverPath = require('@sitespeed.io/edgedriver').binPath();
         const service = new edge.ServiceBuilder(edgeDriverPath)
           .setPort(5555)
           .build();

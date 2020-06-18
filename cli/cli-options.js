@@ -30,7 +30,6 @@ module.exports = {
         description: 'Number of threads in execution during parallel run',
         demandOption: false,
         requiresArg: true,
-        type: 'number',
-        default: 2
+        type: 'number'
     }
 }

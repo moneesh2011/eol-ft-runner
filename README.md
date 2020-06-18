@@ -64,7 +64,7 @@ In your package.json, the npm script `test` should point to the ft-runner execut
 
 `tags` are cucumber tags found on the top of a scenario inside a feature file. Tags are optional, and will execute all scenarios if not provided. To run multiple tags, use `--tags "@sanity @smoke @etc"`.
 
-`cores` are the number of parallel threads of execution specified in the format "--cores 3" or "--cores 10". Cores are optional, and will run on 2 cores if not provided.
+`cores` are the number of parallel threads of execution specified in the format "--cores 3" or "--cores 10". Cores are optional, and will run on 2 cores if not specified. For Safari & Edge browsers, cores will be defaulted to 1 due to their respective [browser instance restrictions](https://github.com/SeleniumHQ/selenium/issues/5057).
 
 #### Sample config.json file
 ```json

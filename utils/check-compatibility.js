@@ -47,7 +47,7 @@ function checkDriverCompatibility(browsers) {
     }    
 
     if (_browsers.includes("safari")) {
-        console.log("Safari driver is pre-packaged. Skipping driver check for Safari.");
+        console.log("SafariDriver is pre-packaged. Skipping driver check for Safari.");
         _browsers = _.remove(_browsers, (value) => {
             return value !== "safari";
         });
@@ -74,7 +74,7 @@ function checkDriverCompatibility(browsers) {
             });
         }
     } else {
-        console.error("Skipping driver checks. Empty browsers array:", _browsers);
+        console.error("Skipping driver checks. Empty browser queue:", _browsers);
     }
 }
 

@@ -7,7 +7,7 @@ const colors = require('colors');
 const { checkDriverCompatibility } = require('../utils/check-compatibility');
 const options = require('./cli-options');
 const Configurator = require('./configurator');
-const { processTags, processWorldParams } = require('../utils/modify-options');
+const { processTags, processWorldParams, processCores } = require('../utils/modify-options');
 const { createFolder, mergeReports } = require('../utils/utility');
 
 global.platform = process.platform;
@@ -33,6 +33,7 @@ async function getCucumberArgs() {
     for (i=0; i < configOptions.browser.length; i++) {
         const tags = await processTags(configOptions.browser[i], configOptions.tags);
         const worldParams = await processWorldParams(configOptions.browser[i], argv.headless);
+        const cores = await processCores(configOptions.browser[i], configOptions.cores);
         
         cukeArgs.push([
             cucumberExePath,
@@ -50,7 +51,7 @@ async function getCucumberArgs() {
             '--format',
             path.normalize(`json:${projDir}/${configOptions.reportFolderPath}/cucumber-report-${configOptions.browser[i]}.json`),
             '--parallel',
-            configOptions.cores,
+            cores,
             '--world-parameters',
             `${worldParams}`
         ]);
@@ -70,6 +71,7 @@ async function runCucumberTests() {
 
         commands.forEach(async (command, index) => {
             const cli = command.join(" ");
+            console.log(`\n=> Running: ${cli}\n`)
             exec(cli, (err, stdout, stderr) => {
                 console.log(`[ --- ${global.browsers[index]} --- ]`.bgGreen.white);
                 console.log(`--- stdout:`.yellow + `\n${stdout}`);
