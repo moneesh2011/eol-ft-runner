@@ -610,17 +610,20 @@ class Driver {
    * @returns {string} - Entire browser logs in preserved state
    */
   async getBrowserConsoleLogs() {
-    const logs = await this.driver
-      .manage()
-      .logs()
-      .get('browser');
     let logString = '';
-    if (logs !== undefined || logs.length != 0) {
-      logs.forEach(log => {
-        logString = logString + `\n[${log.level}] ${log.message}`;
-      });
+    try {
+      const logs = await this.driver
+        .manage()
+        .logs()
+        .get('browser');
+      if (logs !== undefined || logs.length != 0) {
+        logs.forEach(log => {
+          logString = logString + `\n[${log.level}] ${log.message}`;
+        });
+      }
+    } finally {
+      return logString;
     }
-    return logString;
   }
 
   /**
