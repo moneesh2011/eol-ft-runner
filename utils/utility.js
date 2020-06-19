@@ -36,6 +36,12 @@ const createFolder = (reportsDir) => {
   }
 }
 
+const cleanup = (browsers, reportsPath) => {
+  browsers.forEach(browser => {
+    fs.unlinkSync(`${reportsPath}/cucumber-report-${browser}.json`);
+  });
+};
+
 const waitForReport = (reportsDir) => {
   const filePath = (global.platform === 'win32') ? reportsDir : reportsDir.replace('\\', '');
   const start = Date.now();
@@ -71,7 +77,7 @@ const mergeReports = (browsers, reportsDir) => {
   });
   fs.writeFileSync(`${reportsPath}/cucumber-report.json`, JSON.stringify(output));
   console.log(' # JSON reports merged! # ');
-  // cleanup(browsers);
+  cleanup(browsers, reportsPath);
   generateReport(reportsPath);
 };
 
