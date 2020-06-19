@@ -4,9 +4,13 @@ const firefox = require('selenium-webdriver/firefox');
 const safari = require('selenium-webdriver/safari');
 const edge = require('selenium-webdriver/edge');
 const { setWorldConstructor, setDefaultTimeout } = require('cucumber');
-var caps = require('./desired-capabilities');
-var { Driver } = require('./driver');
 const fs = require('fs');
+
+var caps = require('./desired-capabilities');
+const config = require('./appium-config');
+const { getEmulatorName } = require('./emulator-manager');
+var { Driver } = require('./driver');
+let desiredCapabilities = require('./desired-capabilities');
 
 function setWinDriverPath(runner, browser) {
   if (process.platform === 'win32') {
@@ -110,6 +114,16 @@ function CustomWorld({ attach, parameters }) {
         this.browser = edge.Driver.createSession(options, service);
       }
     }
+  } else if (parameters.browser === 'android') {
+    const emulatorName = getEmulatorName();
+    desiredCapabilities.avd = emulatorName;
+    desiredCapabilities.deviceName = emulatorName;
+
+    // for mobile browsers -- android chrome
+    this.browser = new wd.Builder().forBrowser('android')
+      .usingServer(config.appium.url)
+      .withCapabilities(desiredCapabilities)
+      .build();
   }
 
   this.driver = new Driver(this.browser);

@@ -2,6 +2,7 @@ const yargs = require('yargs');
 const path = require('path');
 const _ = require('lodash');
 const { exec } = require('child_process');
+const waitForPort = require('wait-port');
 const colors = require('colors');
 
 const { checkDriverCompatibility } = require('../utils/check-compatibility');
@@ -9,8 +10,11 @@ const options = require('./cli-options');
 const Configurator = require('./configurator');
 const { processTags, processWorldParams, processCores } = require('../utils/modify-options');
 const { createFolder, mergeReports } = require('../utils/utility');
+const { startAppium, stopAppium } = require('../utils/appium-manager');
+const appiumConfig = require('../utils/appium-config');
 
 global.platform = process.platform;
+let appiumServer = null;
 
 async function getCucumberArgs() {
     const { argv } = yargs
@@ -59,14 +63,12 @@ async function getCucumberArgs() {
     return cukeArgs;
 }
 
-async function runCucumberTests() {
-    const commands = await getCucumberArgs();
-    checkDriverCompatibility(global.browsers);
-    
+async function execCommands(commands) {
     try {
         const done = _.after(global.browsers.length, () => {
             console.log('********** COMPLETED **********'.rainbow);
             mergeReports(global.browsers, global.reportsPath);
+            if (global.browsers.includes('android')) stopAppium(appiumServer);
         });
 
         commands.forEach(async (command, index) => {
@@ -83,6 +85,25 @@ async function runCucumberTests() {
         });
     } catch(e) {
         console.log('main error stacktrace', e.stack);
+    }
+}
+
+async function runCucumberTests() {
+    const commands = await getCucumberArgs();
+    await checkDriverCompatibility(global.browsers);
+    
+    if (global.browsers.includes('android')) {
+        console.log(`Mobile tests detected. Starting appium server...`.green);
+        appiumServer = startAppium();
+        waitForPort({ host: appiumConfig.appium.address, port: appiumConfig.appium.port }).then(open => {
+            if (open) {
+                execCommands(commands);
+            } else {
+                console.error('Appium not started');
+            }
+        });
+    } else {
+        execCommands(commands);
     }
 }
 

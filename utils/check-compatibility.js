@@ -10,8 +10,9 @@ const edgeDriverPath = "node_modules/@sitespeed.io/edgedriver/vendor/msedgedrive
 const edgeOSDriverPath = (process.platform === "win32") ? `${edgeDriverPath}.exe` : edgeDriverPath;
 const projPath = process.cwd().replace(/(\s+)/g, '\\$1');
 const fullEdgeDriverPath = path.normalize(projPath + '/' + edgeOSDriverPath);
+const fullChromeDriverPath = path.normalize(projPath + '/node_modules/.bin/chromedriver');
 
-function getDriverName(browser) {
+async function getDriverName(browser) {
     if ((browser === "chrome") || (browser === "android")) return "Chromedriver";
     else if (browser === "firefox") return "Geckodriver";
     else if (browser === "edge") return "MSEdgeDriver";
@@ -19,14 +20,14 @@ function getDriverName(browser) {
     else return "Unknown";
 }
 
-function getCommand(browser) {
+async function getCommand(browser) {
     switch(browser) {
         case "chrome":
             return `chromedriver -v`;
         case "firefox":
             return (global.platform === "win32") ? `geckodriver --version | findstr "+"` : `geckodriver --version | awk 'FNR == 1'`;
         case "android":
-            return `chromedriver -v`;
+            return `${fullChromeDriverPath} -v`;
         case "edge":
             return (global.platform === "win32") ? `${fullEdgeDriverPath} -v` : `./${edgeDriverPath} -v`;
         case "ie":
@@ -38,7 +39,7 @@ function getCommand(browser) {
     }
 }
 
-function checkDriverCompatibility(browsers) {
+async function checkDriverCompatibility(browsers) {
     let _browsers = [];
     if (!Array.isArray(browsers)) {
         _browsers.push(browsers);
@@ -48,7 +49,7 @@ function checkDriverCompatibility(browsers) {
 
     if (_browsers.includes("safari")) {
         console.log("SafariDriver is pre-packaged. Skipping driver check for Safari.");
-        _browsers = _.remove(_browsers, (value) => {
+        _browsers = await _.remove(_browsers, (value) => {
             return value !== "safari";
         });
     }
@@ -56,8 +57,8 @@ function checkDriverCompatibility(browsers) {
     if (_browsers.includes("chrome") || _browsers.includes("firefox") || _browsers.includes("android") || _browsers.includes("ie") || _browsers.includes("edge")) {
         for(i=0; i < _browsers.length; i++) {
             let browser = _browsers[i],
-                driverName = getDriverName(browser),
-                command = getCommand(browser);
+                driverName = await getDriverName(browser),
+                command = await getCommand(browser);
 
             exec(command, async (err, stdout, stderr) => {
                 if (stdout != '') {
@@ -86,6 +87,9 @@ async function example(browser) {
         options = new firefox.Options().headless();
     } else if (browser === "edge") {
         options = new edge.Options();
+    } else if (browser === 'android') {
+        options = new chrome.Options().addArguments('--no-sandbox').addArguments('--disable-dev-shm-usage').headless();
+        browser = "chrome";
     }
 
     try {
