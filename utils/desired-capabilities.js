@@ -17,7 +17,7 @@ module.exports = {
   },
   android: {
     platformName: 'Android',
-    platformVersion: '9',
+    platformVersion: '10',
     browserName: 'Chrome',
     platform: 'ANDROID',
     newCommandTimeout: 30,

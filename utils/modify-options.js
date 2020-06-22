@@ -14,7 +14,7 @@ async function processWorldParams(browserName, headlessFlag) {
 }
 
 async function processCores(browserName, cores) {
-    return ((browserName === 'safari' || browserName === 'edge')) ? 1 : (cores || 2);
+    return ((browserName === 'safari' || browserName === 'edge' || browserName === 'android')) ? 1 : (cores || 2);
 }
 
 module.exports = {

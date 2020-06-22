@@ -19,7 +19,7 @@ npm install eol-ft-runner --save-dev
 | Safari  | ✅Yes  | ⛔️N/A |
 | Edge  | ✅Yes | ✅Yes  |
 | Edge Headless | 🛠Not Yet  | 🛠Not Yet  |
-| Android Chrome  | 🛠Not Yet  | 🛠Not Yet  |
+| Android Chrome  | ✅Yes | ✅Yes  |
 | iOS Safari  | 🛠Not Yet  | ⛔️N/A |
 | Internet Explorer  | ⛔️N/A  | 🛠Not Yet  |
 | Opera  | ❌No  | ❌No  |
@@ -60,7 +60,7 @@ npm run test -- --config config.json --browser chrome --tags @sanity --cores 2
 ```
 In your package.json, the npm script `test` should point to the ft-runner executable: `./node_modules/eol-ft-runner/bin/ft-runner`.
 
-`browser` can be 'chrome', 'firefox', 'safari', 'edge'.
+`browser` can be 'chrome', 'firefox', 'safari', 'edge', 'android'.
 
 `tags` are cucumber tags found on the top of a scenario inside a feature file. Tags are optional, and will execute all scenarios if not provided. To run multiple tags, use `--tags "@sanity @smoke @etc"`.
 
@@ -84,6 +84,7 @@ Create the `config.json` file anywhere in your project, and provide its relative
 #### Read more:
 - [Driver class methods](./docs/driver.md)
 - [Differentiating desktop browser and mobile browser tests](./docs/desktop_mobile.md)
+- [Running tests on Android chrome browser](./docs/android_setup.md)
 - [Debugging tests in VSCode](./docs/vscode_debug.md)
 
 #### Sample test project
