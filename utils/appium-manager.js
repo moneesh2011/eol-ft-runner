@@ -47,7 +47,12 @@ const startAppium = () => {
 };
 
 const stopAppium = server => {
-  server.kill('SIGHUP');
+  if (process.platform === "win32") {
+    const processInfo = execSync(`netstat -ano | findstr "0.0.0.0:4723"`, { encoding: 'utf-8'} );
+    const processPID = processInfo.trim().match(/[0-9]{3,5}$/g);
+    execSync(`taskkill /F /PID ${processPID}`);
+  }
+  else server.kill('SIGHUP');
 };
 
 // const server = startAppiumServer();

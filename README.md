@@ -19,7 +19,7 @@ npm install eol-ft-runner --save-dev
 | Safari  | ✅Yes  | ⛔️N/A |
 | Edge  | ✅Yes | ✅Yes  |
 | Edge Headless | 🛠Not Yet  | 🛠Not Yet  |
-| Android Chrome  | ✅Yes | 🛠Not Yet  |
+| Android Chrome  | ✅Yes | ✅Yes  |
 | iOS Safari  | 🛠Not Yet  | ⛔️N/A |
 | Internet Explorer  | ⛔️N/A  | 🛠Not Yet  |
 | Opera  | ❌No  | ❌No  |

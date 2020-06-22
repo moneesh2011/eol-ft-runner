@@ -1,6 +1,6 @@
 ## TEST SETUP FOR ANDROID CHROME
 **Step-1 : Setup Android SDK & Emulator**
-- Install Android SDK by downloading Android Studio from Android Developers website: https://developer.android.com/
+- Install Android SDK by downloading Android Studio from Android Developers website: https://developer.android.com/studio
 - Take note of your Android SDK path in Android Studio -> Preferences -> Appearance & Behavior -> System Settings -> Android SDK (check "Android SDK Location")
 - Launch AVD in Android Studio and proceed to create an Android emulator
 - During AVD setup, download the required version of Android OS to use with your AVD; All SDK support libraries should be installed along with the OS
