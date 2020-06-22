@@ -1,5 +1,6 @@
 const { execSync, spawn } = require('child_process');
 const config = require('./appium-config');
+const path = require('path');
 const kill = require('kill-port');
 
 const appiumConfig = config.appium;
@@ -11,7 +12,8 @@ const startAppium = () => {
     .toString()
     .trim();
 
-  const output = spawn(`${npmBin}/appium`, [
+  const appiumExe = (process.platform === 'win32') ? path.normalize(`${npmBin}/appium.cmd`) : `${npmBin}/appium`;
+  const output = spawn(appiumExe, [
     '--address',
     appiumConfig.address,
     '--log-level',
