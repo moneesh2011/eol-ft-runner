@@ -5,7 +5,7 @@ const kill = require('kill-port');
 
 const appiumConfig = config.appium;
 
-const startAppium = () => {
+const startAppium = (browsers) => {
   kill(appiumConfig.port);
 
   const npmBin = execSync('npm bin')
@@ -13,7 +13,7 @@ const startAppium = () => {
     .trim();
 
   const appiumExe = (process.platform === 'win32') ? path.normalize(`${npmBin}/appium.cmd`) : `${npmBin}/appium`;
-  const output = spawn(appiumExe, [
+  let appiumArgs = [
     '--address',
     appiumConfig.address,
     '--log-level',
@@ -21,10 +21,18 @@ const startAppium = () => {
     '--port',
     appiumConfig.port,
     '--default-capabilities',
-    JSON.stringify(appiumConfig.defaultCapabilities),
-    '--chromedriver-executable',
-    require('chromedriver').path
-  ]);
+    JSON.stringify(appiumConfig.defaultCapabilities)
+  ];
+  
+  if (browsers.includes('android')) {
+    appiumArgs.push('--chromedriver-executable');
+    appiumArgs.push(require('chromedriver').path);
+  } 
+  if (browsers.includes('ios')) {
+    appiumArgs.push('--native-instruments-lib');
+  }
+
+  const output = spawn(appiumExe, appiumArgs);
 
   output.stdout.on('data', data => {
     console.log(`stdout: ${data}`);

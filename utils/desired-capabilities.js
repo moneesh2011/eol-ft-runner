@@ -27,12 +27,12 @@ module.exports = {
   },
   ios: {
     browserName: 'Safari',
-    platform: 'IOS',
     platformName: 'iOS',
-    platformVersion: '11.3',
-    deviceName: 'iPhone X',
+    platformVersion: '13.5',
+    deviceName: 'iPhone 11',
     automationName: 'XCUITest',
     startIWDP: true,
-    newCommandTimeout: 30
+    newCommandTimeout: 30,
+    safariAllowPopups: true
   }
 };

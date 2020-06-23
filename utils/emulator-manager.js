@@ -20,6 +20,12 @@ const quitEmulatorOnWindows= () => {
   });
 }
 
+// Close Simulator App
+const closeSimulatorApp = () => {
+  const exitAppCmd = "quit app \"Simulator\"";
+  execSync(`osascript -e '${exitAppCmd}'`);
+};
+
 const getEmulatorName = () => {
     const stdout = execSync('emulator -list-avds', {
       encoding: 'utf-8'
@@ -35,5 +41,6 @@ const getEmulatorName = () => {
 
 module.exports = {
     exitAndroidEmulator,
-    getEmulatorName
+    getEmulatorName,
+    closeSimulatorApp
 };

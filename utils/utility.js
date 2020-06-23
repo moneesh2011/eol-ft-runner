@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { generateReport } = require('../utils/generate-report');
-const { exitAndroidEmulator } = require('./emulator-manager');
+const { exitAndroidEmulator, closeSimulatorApp } = require('./emulator-manager');
 
 const browserImgSrc = {
   firefox: 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/firefox-32.png',
@@ -42,6 +42,7 @@ const cleanup = (browsers, reportsPath) => {
     fs.unlinkSync(`${reportsPath}/cucumber-report-${browser}.json`);
   });
   if (global.browsers.includes('android')) exitAndroidEmulator();
+  else if (global.browsers.includes('ios')) closeSimulatorApp();
 };
 
 const waitForReport = (reportsDir) => {

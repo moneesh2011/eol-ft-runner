@@ -20,7 +20,7 @@ npm install eol-ft-runner --save-dev
 | Edge  | ✅Yes | ✅Yes  |
 | Edge Headless | 🛠Not Yet  | 🛠Not Yet  |
 | Android Chrome  | ✅Yes | ✅Yes  |
-| iOS Safari  | 🛠Not Yet  | ⛔️N/A |
+| iOS Safari  | ✅Yes  | ⛔️N/A |
 | Internet Explorer  | ⛔️N/A  | 🛠Not Yet  |
 | Opera  | ❌No  | ❌No  |
 | Brave  | ❌No  | ❌No  |
@@ -85,6 +85,7 @@ Create the `config.json` file anywhere in your project, and provide its relative
 - [Driver class methods](./docs/driver.md)
 - [Differentiating desktop browser and mobile browser tests](./docs/desktop_mobile.md)
 - [Running tests on Android chrome browser](./docs/android_setup.md)
+- [Running tests on iOS Safari browser](./docs/ios_setup.md)
 - [Debugging tests in VSCode](./docs/vscode_debug.md)
 
 #### Sample test project

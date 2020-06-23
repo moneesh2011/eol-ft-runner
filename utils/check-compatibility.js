@@ -54,6 +54,13 @@ async function checkDriverCompatibility(browsers) {
         });
     }
 
+    if (_browsers.includes("ios")) {
+        console.log("No driver checks required for iOS. Skipping..");
+        _browsers = await _.remove(_browsers, (value) => {
+            return value !== "ios";
+        });
+    }
+
     if (_browsers.includes("chrome") || _browsers.includes("firefox") || _browsers.includes("android") || _browsers.includes("ie") || _browsers.includes("edge")) {
         for(i=0; i < _browsers.length; i++) {
             let browser = _browsers[i],
