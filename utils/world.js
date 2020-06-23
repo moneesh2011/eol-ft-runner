@@ -124,6 +124,12 @@ function CustomWorld({ attach, parameters }) {
       .usingServer(config.appium.url)
       .withCapabilities(desiredCapabilities)
       .build();
+  } else if (parameters.browser === 'ios') {
+    // for mobile browsers -- ios safari
+    this.browser = new wd.Builder()
+      .usingServer(config.appium.url)
+      .withCapabilities(desiredCapabilities)
+      .build();
   }
 
   this.driver = new Driver(this.browser);

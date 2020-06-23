@@ -68,7 +68,7 @@ async function execCommands(commands) {
         const done = _.after(global.browsers.length, () => {
             console.log('********** COMPLETED **********'.rainbow);
             mergeReports(global.browsers, global.reportsPath);
-            if (global.browsers.includes('android')) stopAppium(appiumServer);
+            if (global.browsers.includes('android') || global.browsers.includes('ios')) stopAppium(appiumServer);
         });
 
         commands.forEach(async (command, index) => {
@@ -92,9 +92,9 @@ async function runCucumberTests() {
     const commands = await getCucumberArgs();
     await checkDriverCompatibility(global.browsers);
     
-    if (global.browsers.includes('android')) {
+    if (global.browsers.includes('android') || global.browsers.includes('ios')) {
         console.log(`Mobile tests detected. Starting appium server...`.green);
-        appiumServer = startAppium();
+        appiumServer = startAppium(global.browsers);
         waitForPort({ host: appiumConfig.appium.address, port: appiumConfig.appium.port }).then(open => {
             if (open) {
                 execCommands(commands);
