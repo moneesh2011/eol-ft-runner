@@ -31,5 +31,11 @@ module.exports = {
         demandOption: false,
         requiresArg: true,
         type: 'number'
+    },
+    retry: {
+        description: 'Retry failed tests for specified number of times',
+        demandOption: false,
+        requiresArg: true,
+        type: 'number'
     }
 }

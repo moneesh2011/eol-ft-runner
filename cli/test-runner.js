@@ -59,6 +59,7 @@ async function getCucumberArgs() {
             '--world-parameters',
             `${worldParams}`
         ]);
+        if (configOptions.retry) cukeArgs[i].push('--retry', configOptions.retry);
     }
     return cukeArgs;
 }
