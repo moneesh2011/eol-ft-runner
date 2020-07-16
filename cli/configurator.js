@@ -15,7 +15,8 @@ class Configurator {
             stepDefinitionPath: '',
             supportFolderPath: '',
             reportFolderPath: '',
-            retry: ''
+            retry: '',
+            rerun: ''
         };
 
         this.setConfigFileObject();
