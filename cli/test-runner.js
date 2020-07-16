@@ -9,12 +9,14 @@ const { checkDriverCompatibility } = require('../utils/check-compatibility');
 const options = require('./cli-options');
 const Configurator = require('./configurator');
 const { processTags, processWorldParams, processCores } = require('../utils/modify-options');
-const { createFolder, mergeReports } = require('../utils/utility');
+const { createFolder, mergeReports, removeRerunTxtFiles } = require('../utils/utility');
 const { startAppium, stopAppium } = require('../utils/appium-manager');
+const { exitAndroidEmulator, closeSimulatorApp } = require('../utils/emulator-manager');
+const { retryFailingTests } = require('./rerun-manager');
 const appiumConfig = require('../utils/appium-config');
 
 global.platform = process.platform;
-let appiumServer = null;
+global.appiumServer = null;
 
 async function getCucumberArgs() {
     const { argv } = yargs
@@ -25,41 +27,59 @@ async function getCucumberArgs() {
         .option(options);
 
     const configOptions = new Configurator(argv).options;
+    global.configOptions = configOptions;
     global.browsers = configOptions.browser;
+    global.headless = argv.headless;
+    global.retry = argv.retry || configOptions.retry;
+    global.rerun = argv.rerun || configOptions.rerun;
+
+    if (global.retry && global.rerun) {
+        console.info('Retry & Rerun can not be used together. Re-setting execution to only use cucumber-js <retry> mechanism.'.red.italic);
+        global.rerun = false;
+    }
+    
+    global.projDir = process.cwd().replace(/(\s+)/g, '\\$1');
+    global.nodeCwd = path.resolve(__dirname).replace(/(\s+)/g, '\\$1');
+    global.cucumberExePath = path.normalize(global.projDir + '/node_modules/.bin/cucumber-js');
+    global.reportsPath = path.normalize(global.projDir + "/" + configOptions.reportFolderPath);
+
+    createFolder(global.reportsPath);
 
     let cukeArgs = [];
-    const projDir = process.cwd().replace(/(\s+)/g, '\\$1');
-    const nodeCwd = path.resolve(__dirname).replace(/(\s+)/g, '\\$1');
-    
-    const cucumberExePath = path.normalize(projDir + '/node_modules/.bin/cucumber-js');
-    global.reportsPath = path.normalize(projDir + "/" + configOptions.reportFolderPath);
-    createFolder(global.reportsPath);
     for (i=0; i < configOptions.browser.length; i++) {
         const tags = await processTags(configOptions.browser[i], configOptions.tags);
-        const worldParams = await processWorldParams(configOptions.browser[i], argv.headless);
+        const worldParams = await processWorldParams(configOptions.browser[i], global.headless);
         const cores = await processCores(configOptions.browser[i], configOptions.cores);
         
         cukeArgs.push([
             cucumberExePath,
-            path.normalize(`${projDir}/${configOptions.featurePath}`),
+            path.normalize(`${global.projDir}/${configOptions.featurePath}`),
             '--require',
-            path.normalize(`${projDir}/${configOptions.stepDefinitionPath}`),
+            path.normalize(`${global.projDir}/${configOptions.stepDefinitionPath}`),
             '--require',
-            path.normalize(`${nodeCwd}/../utils/hooks.js`),
+            path.normalize(`${global.nodeCwd}/../utils/hooks.js`),
             '--require',
-            path.normalize(`${projDir}/${configOptions.supportFolderPath}`),
+            path.normalize(`${global.projDir}/${configOptions.supportFolderPath}`),
             '--require',
-            path.normalize(`${nodeCwd}/../utils/world.js`),
+            path.normalize(`${global.nodeCwd}/../utils/world.js`),
             '--tags',
             `"${tags}"`,
             '--format',
-            path.normalize(`json:${projDir}/${configOptions.reportFolderPath}/cucumber-report-${configOptions.browser[i]}.json`),
+            path.normalize(`json:${global.projDir}/${configOptions.reportFolderPath}/cucumber-report-${configOptions.browser[i]}.json`),
             '--parallel',
             cores,
             '--world-parameters',
             `${worldParams}`
         ]);
-        if (configOptions.retry) cukeArgs[i].push('--retry', configOptions.retry);
+        if (global.retry) {
+            cukeArgs[i].push('--retry', global.retry);
+        }
+        if (global.rerun) {
+            cukeArgs[i].push(
+                '--format',
+                path.normalize(`rerun:${global.projDir}/${configOptions.reportFolderPath}/@rerun-${configOptions.browser[i]}.txt`)
+            );
+        }
     }
     return cukeArgs;
 }
@@ -68,8 +88,15 @@ async function execCommands(commands) {
     try {
         const done = _.after(global.browsers.length, () => {
             console.log('********** COMPLETED **********'.rainbow);
-            mergeReports(global.browsers, global.reportsPath);
-            if (global.browsers.includes('android') || global.browsers.includes('ios')) stopAppium(appiumServer);
+            mergeReports(global.browsers, global.reportsPath); //refactor cleanup to be called from here
+            if (global.rerun) {
+                retryFailingTests();
+            } else {
+                if (global.browsers.includes('android')) exitAndroidEmulator();
+                if (global.browsers.includes('ios')) closeSimulatorApp();
+                if (global.browsers.includes('android') || global.browsers.includes('ios')) stopAppium(global.appiumServer);
+                removeRerunTxtFiles();
+            }
         });
 
         commands.forEach(async (command, index) => {
@@ -95,7 +122,7 @@ async function runCucumberTests() {
     
     if (global.browsers.includes('android') || global.browsers.includes('ios')) {
         console.log(`Mobile tests detected. Starting appium server...`.green);
-        appiumServer = startAppium(global.browsers);
+        global.appiumServer = startAppium(global.browsers);
         waitForPort({ host: appiumConfig.appium.address, port: appiumConfig.appium.port }).then(open => {
             if (open) {
                 execCommands(commands);
@@ -108,4 +135,7 @@ async function runCucumberTests() {
     }
 }
 
-runCucumberTests();
+module.exports = {
+    execCommands: execCommands,
+    runCucumberTests: runCucumberTests
+};

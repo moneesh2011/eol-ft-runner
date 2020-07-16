@@ -63,9 +63,6 @@ const stopAppium = server => {
   else server.kill('SIGHUP');
 };
 
-// const server = startAppiumServer();
-// setTimeout(() => { server.kill('SIGHUP')}, 10000);
-
 module.exports = {
   startAppium: startAppium,
   stopAppium: stopAppium

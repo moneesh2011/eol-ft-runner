@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
 require('../index');
-require('../cli/test-runner');
+require('../cli/test-runner').runCucumberTests();

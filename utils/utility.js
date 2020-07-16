@@ -1,6 +1,6 @@
 const fs = require('fs');
+const path = require('path'); //verify if this is required
 const { generateReport } = require('../utils/generate-report');
-const { exitAndroidEmulator, closeSimulatorApp } = require('./emulator-manager');
 
 const browserImgSrc = {
   firefox: 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/firefox-32.png',
@@ -9,7 +9,14 @@ const browserImgSrc = {
   ie: 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/internet_explorer-32.png',
   android: 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/android-32.png',
   ios: 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/apple-32.png',
-  edge: 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/edge-32.png'
+  edge: 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/edge-32.png',
+  'firefox-rerun': 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/firefox-32.png',
+  'chrome-rerun': 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/chrome-32.png',
+  'safari-rerun': 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/safari-32.png',
+  'ie-rerun': 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/internet_explorer-32.png',
+  'android-rerun': 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/android-32.png',
+  'ios-rerun': 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/apple-32.png',
+  'edge-rerun': 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/edge-32.png'
 };
 
 const getPlatformName = async (wd) => {
@@ -41,9 +48,14 @@ const cleanup = (browsers, reportsPath) => {
   browsers.forEach(browser => {
     fs.unlinkSync(`${reportsPath}/cucumber-report-${browser}.json`);
   });
-  if (global.browsers.includes('android')) exitAndroidEmulator();
-  else if (global.browsers.includes('ios')) closeSimulatorApp();
 };
+
+const removeRerunTxtFiles = function() {
+  const files = fs.readdirSync(path.normalize(global.reportsPath));
+  files.forEach(file => {
+      if (file.includes('@rerun')) fs.unlinkSync(path.normalize(`${global.reportsPath}/${file}`));
+  });
+}
 
 const waitForReport = (reportsDir) => {
   const filePath = (global.platform === 'win32') ? reportsDir : reportsDir.replace('\\', '');
@@ -88,5 +100,6 @@ module.exports = {
   getPlatformName: getPlatformName,
   getBrowserName: getBrowserName,
   mergeReports: mergeReports,
-  createFolder: createFolder
+  createFolder: createFolder,
+  removeRerunTxtFiles: removeRerunTxtFiles
 };

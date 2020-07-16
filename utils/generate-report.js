@@ -7,11 +7,13 @@ module.exports.generateReport = (reportsPath) => {
   var cucumberReportPath = path.resolve(reportsPath, 'cucumber-report.json');
 
   if (reportsPath && fs.existsSync(reportsPath)) {
+    const reportName = (global.browsers[0].includes("rerun")) ? 'cucumber-report-rerun.html' : 'cucumber-report.html';
+
     //generate HTML report
     var reportOptions = {
       theme: 'bootstrap',
       jsonFile: cucumberReportPath,
-      output: path.resolve(reportsPath, 'cucumber-report.html'),
+      output: path.resolve(reportsPath, reportName),
       reportSuiteAsScenarios: true,
       launchReport: false,
       ignoreBadJsonFile: true
