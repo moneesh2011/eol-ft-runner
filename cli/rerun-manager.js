@@ -8,6 +8,7 @@ const { processWorldParams } = require('../utils/modify-options');
 const { mergeReports, removeRerunTxtFiles } = require('../utils/utility');
 const { stopAppium } = require('../utils/appium-manager');
 const { exitAndroidEmulator, closeSimulatorApp } = require('../utils/emulator-manager');
+const { sendSlackNotification } = require('../notifications/slack');
 
 function getRerunFiles() {
     let markedForRerun = [];
@@ -79,6 +80,7 @@ async function retryFailingTests() {
                 if (global.browsers.includes('ios-rerun')) closeSimulatorApp();
                 if (global.browsers.includes('android-rerun') || global.browsers.includes('ios')) stopAppium(global.appiumServer);
                 removeRerunTxtFiles();
+                if(global.webhookUrl !== '') sendSlackNotification();
             });
         
             commands.forEach(async (command, index) => {

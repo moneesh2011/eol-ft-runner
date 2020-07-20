@@ -43,5 +43,23 @@ module.exports = {
         demandOption: false,
         requiresArg: false,
         type: 'boolean'
+    },
+    webhookUrl: {
+        description: 'Slack webhook url',
+        demandOption: false,
+        requiresArg: true,
+        type: 'string'
+    },
+    ciLinkTitle: {        
+        description: 'Send slack notifications',
+        demandOption: false,
+        requiresArg: true,
+        type: 'string'
+    },
+    ciLinkUrl: {        
+        description: 'Send slack notifications',
+        demandOption: false,
+        requiresArg: true,
+        type: 'string'
     }
 }

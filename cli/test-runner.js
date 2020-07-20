@@ -33,6 +33,11 @@ async function getCucumberArgs() {
     global.retry = argv.retry || configOptions.retry;
     global.rerun = argv.rerun || configOptions.rerun;
 
+    // get slack notification settings
+    global.webhookUrl = argv.webhookUrl || '';
+    global.ciLinkTitle = argv.ciLinkTitle || '';
+    global.ciLinkUrl = argv.ciLinkUrl || '';
+
     if (global.retry && global.rerun) {
         console.info('Retry & Rerun can not be used together. Re-setting execution to only use cucumber-js <retry> mechanism.'.red.italic);
         global.rerun = false;

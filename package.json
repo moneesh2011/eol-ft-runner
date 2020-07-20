@@ -1,6 +1,6 @@
 {
   "name": "eol-ft-runner",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Application UI test runner that integration Selenium, Appium & CucumberJS for an all-round UI testing experince in Behaviour-driven development (BDD)",
   "main": "index.js",
   "scripts": {
@@ -32,6 +32,7 @@
     "jsdoc-to-markdown": "^6.0.1",
     "kill-port": "^1.6.0",
     "lodash": ">=4.17.19",
+    "messaging-api-slack": "^0.8.2",
     "moment": "^2.25.3",
     "selenium-webdriver": "^4.0.0-alpha.7",
     "wait-port": "^0.2.9",
