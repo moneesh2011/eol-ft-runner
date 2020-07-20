@@ -10,9 +10,15 @@ const { SlackWebhookClient } = require('messaging-api-slack');
  */
 const sendSlackNotification = function() {
     const custom_title = `FT re-run mechanism triggered`;
-    const custom_value = (global.ciLinkTitle && global.ciLinkUrl)
-        ? `<${global.ciLinkUrl}|${global.ciLinkTitle}> had some failing tests; please check.`
-        : `Tests from your recent execution were failing; please check.`;
+    let custom_value = `Tests from your recent execution were failing; please check.`;
+    
+    if (global.ciLinkTitle && global.ciLinkUrl) {
+        global.ciLinkTitle = (global.ciLinkTitle.includes('<')) ? global.ciLinkTitle.replace(/</g, '&lt;') : global.ciLinkTitle;
+        global.ciLinkTitle = (global.ciLinkTitle.includes('>')) ? global.ciLinkTitle.replace(/>/g, '&gt;') : global.ciLinkTitle;
+        global.ciLinkTitle = (global.ciLinkTitle.includes('&')) ? global.ciLinkTitle.replace(/&/g, '&amp;') : global.ciLinkTitle;
+
+        custom_value = `<${global.ciLinkUrl}|${global.ciLinkTitle}> had some failing tests; please check.`;
+    }
 
     const message = {
         fallback: 'Notification on test run completion',
