@@ -1,4 +1,5 @@
-var wd = require('selenium-webdriver');
+const wd = require('selenium-webdriver');
+const wdMobile = require('wd');
 const chrome = require('selenium-webdriver/chrome');
 const firefox = require('selenium-webdriver/firefox');
 const safari = require('selenium-webdriver/safari');
@@ -9,7 +10,8 @@ const fs = require('fs');
 var caps = require('./desired-capabilities');
 const config = require('./appium-config');
 const { getEmulatorName } = require('./emulator-manager');
-var { Driver } = require('./driver');
+const { Driver } = require('./driver');
+const { MobileDriver } = require('./mobile_driver');
 let desiredCapabilities = require('./desired-capabilities');
 
 function setWinDriverPath(runner, browser) {
@@ -114,25 +116,23 @@ function CustomWorld({ attach, parameters }) {
         this.browser = edge.Driver.createSession(options, service);
       }
     }
+    this.driver = new Driver(this.browser);
   } else if (parameters.browser === 'android') {
     const emulatorName = getEmulatorName();
     desiredCapabilities.avd = emulatorName;
     desiredCapabilities.deviceName = emulatorName;
 
     // for mobile browsers -- android chrome
-    this.browser = new wd.Builder().forBrowser('android')
-      .usingServer(config.appium.url)
-      .withCapabilities(desiredCapabilities)
-      .build();
+    this.browser = wdMobile.promiseChainRemote('localhost', 4723)
+      .init(desiredCapabilities);
+    this.driver = new MobileDriver(this.browser);
   } else if (parameters.browser === 'ios') {
     // for mobile browsers -- ios safari
-    this.browser = new wd.Builder()
-      .usingServer(config.appium.url)
-      .withCapabilities(desiredCapabilities)
-      .build();
+    this.browser = wdMobile.promiseChainRemote('localhost', 4723)
+      .init(desiredCapabilities);
+    this.driver = new MobileDriver(this.browser);
   }
 
-  this.driver = new Driver(this.browser);
   global.driver = this.driver;
 }
 

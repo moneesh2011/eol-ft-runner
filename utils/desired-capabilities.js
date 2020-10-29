@@ -22,7 +22,8 @@ module.exports = {
     platform: 'ANDROID',
     newCommandTimeout: 30,
     'chromeOptions': {
-      'androidPackage': 'com.android.chrome'
+      'androidPackage': 'com.android.chrome',
+      'w3c': false
     }
   },
   ios: {

@@ -271,7 +271,7 @@ class Driver {
    * @param {string} value - expected text value for verification
    * @param {number} timeout - optional timeout that overrides the default webdriver timeout
    */
-  waitUntilTextIs(strategy, locator, value, timeout = this.timeout) {
+  async waitUntilTextIs(strategy, locator, value, timeout = this.timeout) {
     return this.waitForElements(strategy, locator, timeout)
       .then(async element => {
         return await this.driver
