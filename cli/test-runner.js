@@ -18,6 +18,8 @@ const appiumConfig = require('../utils/appium-config');
 global.platform = process.platform;
 global.appiumServer = null;
 
+let env = process.env;
+
 async function getCucumberArgs() {
     const { argv } = yargs
         .usage('eol-ft-runner [options]')
@@ -32,6 +34,10 @@ async function getCucumberArgs() {
     global.headless = argv.headless;
     global.retry = argv.retry || configOptions.retry;
     global.rerun = argv.rerun || configOptions.rerun;
+
+    if (configOptions.desiredCapabilities) {
+        env.desiredCaps = JSON.stringify(configOptions.desiredCapabilities);
+    }
 
     // get slack notification settings
     global.webhookUrl = argv.webhookUrl || '';
@@ -107,7 +113,7 @@ async function execCommands(commands) {
         commands.forEach(async (command, index) => {
             const cli = command.join(" ");
             console.log(`\n=> Running: ${cli}\n`)
-            exec(cli, (err, stdout, stderr) => {
+            exec(cli, { env: env }, (err, stdout, stderr) => {
                 console.log(`[ --- ${global.browsers[index]} --- ]`.bgGreen.white);
                 console.log(`--- stdout:`.yellow + `\n${stdout}`);
                 if (stderr != '') {

@@ -16,7 +16,8 @@ class Configurator {
             supportFolderPath: '',
             reportFolderPath: '',
             retry: '',
-            rerun: ''
+            rerun: '',
+            desiredCapabilities: ''
         };
 
         this.setConfigFileObject();

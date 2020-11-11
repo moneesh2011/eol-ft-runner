@@ -7,8 +7,7 @@ const edge = require('selenium-webdriver/edge');
 const { setWorldConstructor, setDefaultTimeout } = require('cucumber');
 const fs = require('fs');
 
-var caps = require('./desired-capabilities');
-const config = require('./appium-config');
+const defaultCaps = require('./desired-capabilities');
 const { getEmulatorName } = require('./emulator-manager');
 const { Driver } = require('./driver');
 const { MobileDriver } = require('./mobile_driver');
@@ -30,10 +29,11 @@ function setWinDriverPath(runner, browser) {
 function CustomWorld({ attach, parameters }) {
   this.attach = attach;
 
+  let desiredCaps = (process.env.desiredCaps) ? JSON.parse(process.env.desiredCaps) : {};
   if (parameters.browser) {
-    desiredCapabilities = caps[parameters.browser];
+    desiredCapabilities = desiredCaps[parameters.browser] || defaultCaps[parameters.browser];
   } else {
-    desiredCapabilities = caps['chrome']; // setting chrome as the default browser, if world-params is null
+    desiredCapabilities = desiredCaps['chrome'] || defaultCaps['chrome']; // setting chrome as the default browser, if world-params is null
   }
   if (!desiredCapabilities) {
     throw new Error('Unknown browser used in desired capabilites');
