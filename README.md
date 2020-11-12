@@ -69,14 +69,31 @@ In your package.json, the npm script `test` should point to the ft-runner execut
 #### Sample config.json file
 ```json
 {
-    "configurations": {
-        "browser": [ "chrome" ],
-        "tags": "@sanity",
-        "featurePath": [ "test/features/" ],
-        "stepDefinitionPath": [ "test/step_definitions/" ],
-        "supportFolderPath": [ "test/support" ],
-        "reportFolderPath": "test/reports"
+  "configurations": {
+    "browser": [ "chrome" ],
+    "tags": "@sanity",
+    "featurePath": [ "test/features/" ],
+    "stepDefinitionPath": [ "test/step_definitions/" ],
+    "supportFolderPath": [ "test/support" ],
+    "reportFolderPath": "test/reports",
+    "rerun": true,
+    "desiredCapabilities": {
+      "chrome": {
+        "browserName": "chrome",
+        "unhandledPromptBehavior": "accept"
+      },
+      "ios": {
+        "browserName": "Safari",
+        "platformName": "iOS",
+        "platformVersion": "14.1",
+        "deviceName": "iPhone 12",
+        "automationName": "XCUITest",
+        "startIWDP": true,
+        "newCommandTimeout": 30,
+        "safariAllowPopups": true
+      }
     }
+  }
 }
 ```
 Create the `config.json` file anywhere in your project, and provide its relative path as a command-line argument: `--config <relative_path_of_config.json>`. For Windows, replace all instances of forward-slashes(/) each with 2 backslashes(\\).
