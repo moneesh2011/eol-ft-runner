@@ -78,7 +78,7 @@ async function retryFailingTests() {
                 mergeReports(global.browsers, global.reportsPath);
                 if (global.browsers.includes('android-rerun')) exitAndroidEmulator();
                 if (global.browsers.includes('ios-rerun')) closeSimulatorApp();
-                if (global.browsers.includes('android-rerun') || global.browsers.includes('ios')) stopAppium(global.appiumServer);
+                if (global.browsers.includes('android-rerun') || global.browsers.includes('ios-rerun')) stopAppium(global.appiumServer);
                 removeRerunTxtFiles();
                 if(global.webhookUrl !== '') sendSlackNotification();
             });
