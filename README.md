@@ -1,5 +1,5 @@
 # FUNCTIONAL TEST RUNNER (eol-ft-runner)
-This framework uses Selenium-webdriver, Appium & CucumberJS to run UI tests written in BDD format.
+This framework uses Selenium-webdriver, wd, Appium & CucumberJS to run UI tests written in BDD format.
 This project is a work in progress, and only ready for desktop browser testing. As we build more features, mobile and other use cases will be available soon in v1.0
 
 ![Description poster](/docs/readme-poster.png)
@@ -103,6 +103,7 @@ Create the `config.json` file anywhere in your project, and provide its relative
 - [Differentiating desktop browser and mobile browser tests](./docs/desktop_mobile.md)
 - [Running tests on Android chrome browser](./docs/android_setup.md)
 - [Running tests on iOS Safari browser](./docs/ios_setup.md)
+- [Desired capabilities for Android & iOS using Appium](http://appium.io/docs/en/writing-running-appium/caps/)
 - [Debugging tests in VSCode](./docs/vscode_debug.md)
 
 #### Sample test project
