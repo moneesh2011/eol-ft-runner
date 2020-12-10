@@ -781,6 +781,8 @@ class Driver {
       try {
         const cookiesFromDriver = await this.driver.manage().getCookies();
         error.message += `\nCookies from 'this.driver.manage().getCookies()' cmd: ${JSON.stringify(cookiesFromDriver)}`;
+        const localStorageFromConsole = await this.driver.executeScript(`return window.localStorage;`);
+        error.message += `\nLocalStorage from 'document.localStorage' cmd: ${JSON.stringify(localStorageFromConsole)}`;
       } catch (error) {
         error.message += `\nCookies: error getting cookies: ${error}`;
       }
