@@ -587,7 +587,10 @@ class Driver {
       }),
       this.timeout,
       `element ${locator} is still visible`
-    );
+    ).catch(async error => {
+      error.message = `Error occurred in waitForElementToBeNotVisible("${strategy}", "${locator}")\n` + error.message;
+      await this.processAndThrowError(error, new Error().stack);
+    });
   }
 
   /**
@@ -602,7 +605,14 @@ class Driver {
       }),
       this.timeout,
       `element ${locator} is not visible`
-    );
+    ).catch(async error => {
+      if (error.name === 'StaleElementReferenceError') {
+        await this.waitForElementToBeVisible(strategy, locator);
+      } else {
+        error.message = `Error occurred in waitForElementToBeVisible("${strategy}", "${locator}")\n` + error.message;
+        await this.processAndThrowError(error, new Error().stack);
+      }
+    });
   }
 
   /**
@@ -691,8 +701,6 @@ class Driver {
         error.message = error.message + `\nNumber of times checked: "${numberOfTimesChecked}"`;
         await this.processAndThrowError(error, new Error().stack);
       });
-
-    return cookieValue;
   }
 
   /**
