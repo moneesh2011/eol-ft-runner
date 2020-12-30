@@ -537,6 +537,37 @@ class Driver {
   }
 
   /**
+   * Waits until the image element 'complete' attribute value becomes true, within timeout
+   * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
+   * @param {string} locator - value of element to search, corresponding to locator strategy
+   * @param {number} timeout - optional timeout, overriding the global driver timeout
+   */
+  waitUntilImageLoaded(strategy, locator, timeout = this.timeout) {
+    return this.waitForElements(strategy, locator, timeout)
+      .then((elements) => {
+        return this.driver.wait(async () => {
+              return this.driver.executeScript(`return arguments[0].complete;`, elements[0]).then((state) => {
+                return (state === true);
+              });
+            },
+            timeout,
+            `Issue loading the image`)
+          .catch((reason) => {
+            reason.message = reason.message + `\nFailed waiting for image to complete loading ${strategy}: ${locator}`;
+            throw reason;
+          });
+      })
+      .catch(async error => {
+        if (error.name === 'StaleElementReferenceError') {
+          await this.waitUntilImageLoaded(strategy, locator, timeout);
+        } else {
+          error.message = `Error occurred in waitUntilImageLoaded("${strategy}", "${locator}")\n` + error.message;
+          await this.processAndThrowError(error, new Error().stack);
+        }
+      });
+  }
+
+  /**
    * Opens a new tab with specified URL
    * @param {string} url - URL to be opened
    */

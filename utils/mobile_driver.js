@@ -7,7 +7,7 @@ const moment = require('moment');
 const asserters = wd.asserters;
 
 const getPlatformName = async (wd) => {
-  let caps = await wd.sessionCapabilities();
+	let caps = await wd.sessionCapabilities();
 	return caps.platformName;
 };
 
@@ -87,8 +87,8 @@ class MobileDriver {
 	}
 
 	async waitForElements(strategy, locator, timeout = this.timeout) {
-    strategy = strategyMapping(strategy);
-    
+		strategy = strategyMapping(strategy);
+
 		return await this.driver
 			.waitForElements(strategy, locator, asserters.isDisplayed, timeout)
 			.catch(async (error) => {
@@ -102,8 +102,8 @@ class MobileDriver {
 	}
 
 	async waitForElement(strategy, locator, timeout = this.timeout) {
-    strategy = strategyMapping(strategy);
-    
+		strategy = strategyMapping(strategy);
+
 		try {
 			return await this.driver.waitForElement(strategy, locator, asserters.isDisplayed, timeout);
 		} catch (error) {
@@ -117,12 +117,12 @@ class MobileDriver {
 	}
 
 	async click(strategy, locator, caller) {
-    strategy = strategyMapping(strategy);
+		strategy = strategyMapping(strategy);
 		try {
 			const elements = await this.waitForElements(strategy, locator);
 			const firstElement = elements[0];
 			await firstElement.isEnabled();
-			
+
 			const elementType = await firstElement.getTagName();
 
 			if ((elementType === 'button') | (elementType === 'a')) {
@@ -143,7 +143,7 @@ class MobileDriver {
 	}
 
 	async type(strategy, locator, value) {
-    strategy = strategyMapping(strategy);
+		strategy = strategyMapping(strategy);
 		try {
 			const element = await this.waitForElements(strategy, locator);
 			await element[0].sendKeys(value);
@@ -168,7 +168,7 @@ class MobileDriver {
 	}
 
 	async clear(strategy, locator) {
-    strategy = strategyMapping(strategy);
+		strategy = strategyMapping(strategy);
 		let textFieldValue = '';
 		try {
 			const elements = await this.waitForElements(strategy, locator);
@@ -182,7 +182,7 @@ class MobileDriver {
 	}
 
 	async getText(strategy, locator, waitForText = false) {
-    strategy = strategyMapping(strategy);
+		strategy = strategyMapping(strategy);
 		try {
 			const elements = await this.waitForElements(strategy, locator);
 			if (waitForText) {
@@ -192,8 +192,7 @@ class MobileDriver {
 				}
 
 				await this.driver.waitFor(
-					asserters.jsCondition(await elemText(elements[0]) !== '')
-					, this.timeout);
+					asserters.jsCondition(await elemText(elements[0]) !== ''), this.timeout);
 			}
 			return await elements[0].text();
 		} catch (error) {
@@ -207,7 +206,7 @@ class MobileDriver {
 	}
 
 	async getTexts(strategy, locator) {
-    strategy = strategyMapping(strategy);
+		strategy = strategyMapping(strategy);
 
 		let startTime;
 		let endTime;
@@ -233,9 +232,9 @@ class MobileDriver {
 	}
 
 	async checkTextsAre(strategy, locator, stringArr) {
-    strategy = strategyMapping(strategy);
+		strategy = strategyMapping(strategy);
 		try {
-      const elements = await this.waitForElements(strategy, locator);
+			const elements = await this.waitForElements(strategy, locator);
 			if (elements.length !== stringArr.length) {
 				throw new Error(`Element ${strategy}: ${locator} 's count \nExpect: \'${stringArr.length}\'.\nActual: \'${elements.length}\'`);
 			}
@@ -259,14 +258,13 @@ class MobileDriver {
 	}
 
 	async waitUntilTextIs(strategy, locator, value, timeout = this.timeout) {
-    await this.waitForPageLoadComplete();
+		await this.waitForPageLoadComplete();
 
-    strategy = strategyMapping(strategy);
+		strategy = strategyMapping(strategy);
 		return this.waitForElements(strategy, locator, timeout)
 			.then(async element => {
 				return await this.driver.waitFor(
-					asserters.jsCondition(await element[0].text() === value)
-					, this.timeout)
+						asserters.jsCondition(await element[0].text() === value), this.timeout)
 					.catch(async reason => {
 						const text = await element[0].text();
 						reason.message = reason.message + `\nActual text for ${strategy}: ${locator} is \'${text}\'`;
@@ -283,7 +281,7 @@ class MobileDriver {
 	}
 
 	async waitUntilInputIs(strategy, locator, value) {
-    strategy = strategyMapping(strategy);
+		strategy = strategyMapping(strategy);
 		return this.waitForElements(strategy, locator)
 			.then(async element => {
 				const getAttrValue = async function (elem) {
@@ -292,7 +290,7 @@ class MobileDriver {
 				}
 
 				return await this.driver.waitFor(
-					asserters.jsCondition(await getAttrValue(element[0]) === value), this.timeout)
+						asserters.jsCondition(await getAttrValue(element[0]) === value), this.timeout)
 					.catch(async reason => {
 						const text = await element[0].getAttribute('value');
 						reason.message = reason.message + `\nActual value for ${strategy}: ${locator} is \'${text}\'`;
@@ -310,14 +308,14 @@ class MobileDriver {
 	}
 
 	async waitUntilNumberOfElementsFound(strategy, locator, count) {
-    strategy = strategyMapping(strategy);
+		strategy = strategyMapping(strategy);
 		const getElemLength = (async function () {
 			let elements = await this.waitForElements(strategy, locator);
 			return elements.length;
 		}).bind(this);
 
 		return await this.driver.waitFor(
-			asserters.jsCondition(await getElemLength() === count), this.timeout)
+				asserters.jsCondition(await getElemLength() === count), this.timeout)
 			.catch(async reason => {
 				const count = (await this.waitForElements(strategy, locator)).length;
 				reason.message = reason.message + `\nActual number of element for ${strategy}: ${locator} is \'${count}\'`;
@@ -326,12 +324,11 @@ class MobileDriver {
 	}
 
 	async waitUntilTextContains(strategy, locator, value, timeout = this.timeout) {
-    strategy = strategyMapping(strategy);
+		strategy = strategyMapping(strategy);
 		return this.waitForElements(strategy, locator, timeout)
 			.then(async element => {
 				return await this.driver.waitFor(
-            asserters.jsCondition((await element[0].text()).toString().includes(value))
-          , timeout)
+						asserters.jsCondition((await element[0].text()).toString().includes(value)), timeout)
 					.catch(async reason => {
 						const text = await element[0].text();
 						reason.message = reason.message + `\nActual text for ${strategy}: ${locator} is \'${text}\'`;
@@ -353,7 +350,7 @@ class MobileDriver {
 	}
 
 	async findElements(strategy, locator) {
-    strategy = strategyMapping(strategy);
+		strategy = strategyMapping(strategy);
 		return await this.driver.elements(strategy, locator);
 	}
 
@@ -406,32 +403,55 @@ class MobileDriver {
 
 	async waitForPageLoadComplete() {
 		return this.driver.waitFor(
-			asserters.jsCondition(`document.readyState === "complete"`)
-			, this.timeout).catch(async (reason) => {
-        let status = await this.driver.execute(`return document.readyState`);
-				throw new Error(`Issue loading the page: ${reason.message}. Page status: ${status}`);
-			});
+			asserters.jsCondition(`document.readyState === "complete"`), this.timeout).catch(async (reason) => {
+			let status = await this.driver.execute(`return document.readyState`);
+			throw new Error(`Issue loading the page: ${reason.message}. Page status: ${status}`);
+		});
 	}
 
 	async waitUntilUrlContains(breadcrumb) {
 		await this.waitForPageLoadComplete();
 
 		return this.driver.waitFor(
-			asserters.jsCondition(`window.location.toString().includes("${breadcrumb}")`)
-			, this.timeout).catch(async (reason) => {
-				let currentUrl = await this.driver.url();
-				throw new Error(`URL breadcrumb missing!\nExpected:${breadcrumb}\nActual: ${currentUrl}\n${reason.message}`);
-			});
+			asserters.jsCondition(`window.location.toString().includes("${breadcrumb}")`), this.timeout).catch(async (reason) => {
+			let currentUrl = await this.driver.url();
+			throw new Error(`URL breadcrumb missing!\nExpected:${breadcrumb}\nActual: ${currentUrl}\n${reason.message}`);
+		});
 	}
 
 	async waitUntilUrlIs(url) {
 		await this.waitForPageLoadComplete();
 
 		return this.driver.waitFor(
-			asserters.jsCondition(`window.location.toString() === "${url}"`)
-			, this.timeout).catch(async (reason) => {
-				let currentUrl = await this.driver.url();
-				throw new Error(`URL mismatch!\nExpected: ${url}\nActual: ${currentUrl}\n${reason.message}`);
+			asserters.jsCondition(`window.location.toString() === "${url}"`), this.timeout).catch(async (reason) => {
+			let currentUrl = await this.driver.url();
+			throw new Error(`URL mismatch!\nExpected: ${url}\nActual: ${currentUrl}\n${reason.message}`);
+		});
+	}
+
+	/**
+	 * Waits until the image element 'complete' attribute value becomes true, within timeout
+	 * @param {string} strategy - 'id', 'name', 'className', 'xpath', 'css', 'tagName', 'linkText', 'partialLinkText'
+	 * @param {string} locator - value of element to search, corresponding to locator strategy
+	 * @param {number} timeout - optional timeout, overriding the global driver timeout
+	 */
+	waitUntilImageLoaded(strategy, locator, timeout = this.timeout) {
+		return this.waitForElements(strategy, locator, timeout)
+			.then(async (elements) => {
+				return this.driver.waitFor(
+						asserters.jsCondition((await elements[0].getAttribute('complete')).includes(true)), timeout)
+					.catch((reason) => {
+						reason.message = reason.message + `\nFailed waiting for image to complete loading ${strategy}: ${locator}`;
+						throw reason;
+					});
+			})
+			.catch(async error => {
+				if (error.name === 'StaleElementReferenceError') {
+					await this.waitUntilImageLoaded(strategy, locator, timeout);
+				} else {
+					error.message = `Error occurred in waitUntilImageLoaded("${strategy}", "${locator}")\n` + error.message;
+					await this.processAndThrowError(error, new Error().stack);
+				}
 			});
 	}
 
@@ -468,28 +488,28 @@ class MobileDriver {
 	}
 
 	async waitForElementToBeNotVisible(strategy, locator) {
-    strategy = strategyMapping(strategy);
+		strategy = strategyMapping(strategy);
 
-    let consoleCmd = "";
-    if (strategy === "id") consoleCmd = `document.getElementById("${locator}") === null`;
-    else if (strategy === "css selector") consoleCmd = `document.querySelectorAll("${locator}").length === 0`;
-    else if (strategy === "class name") consoleCmd = `document.getElementsByClassName("${locator}").length === 0`;
-    else if (strategy === "tag name") consoleCmd = `document.getElementsByTagName("${locator}").length === 0`;
-    else if (strategy === "xpath") consoleCmd = `$x("${locator}").length === 0`;
+		let consoleCmd = "";
+		if (strategy === "id") consoleCmd = `document.getElementById("${locator}") === null`;
+		else if (strategy === "css selector") consoleCmd = `document.querySelectorAll("${locator}").length === 0`;
+		else if (strategy === "class name") consoleCmd = `document.getElementsByClassName("${locator}").length === 0`;
+		else if (strategy === "tag name") consoleCmd = `document.getElementsByTagName("${locator}").length === 0`;
+		else if (strategy === "xpath") consoleCmd = `$x("${locator}").length === 0`;
 
-    return this.driver.waitFor(
-      asserters.jsCondition(consoleCmd), this.timeout).catch(reason => {
-        throw new Error(`Element ${locator} is still visible!\n${reason.message}`);
-    });
+		return this.driver.waitFor(
+			asserters.jsCondition(consoleCmd), this.timeout).catch(reason => {
+			throw new Error(`Element ${locator} is still visible!\n${reason.message}`);
+		});
 	}
 
-  async waitForElementToBeVisible(strategy, locator) {
-    strategy = strategyMapping(strategy);
-    return await this.driver.waitForElement(strategy, locator, asserters.isDisplayed, this.timeout)
-      .catch(reason => {
-        throw new Error(`Element ${locator} not visible!\n${reason.message}`);
-      });
-  }
+	async waitForElementToBeVisible(strategy, locator) {
+		strategy = strategyMapping(strategy);
+		return await this.driver.waitForElement(strategy, locator, asserters.isDisplayed, this.timeout)
+			.catch(reason => {
+				throw new Error(`Element ${locator} not visible!\n${reason.message}`);
+			});
+	}
 
 	async getBrowserConsoleLogs() {
 		let logString = '';
@@ -510,7 +530,7 @@ class MobileDriver {
 
 	//TODO: Refactor to work for mobile
 	uploadFile(strategy, locator, filepath) {
-    strategy = strategyMapping(strategy);
+		strategy = strategyMapping(strategy);
 		return this.waitForElements(strategy, locator)
 			.then(async elements => {
 				await elements[0].sendKeys(filepath);
@@ -519,7 +539,7 @@ class MobileDriver {
 	}
 
 	async throwErrorWithDetailsIfNotStale(strategy, locator, fxName, error, callback) {
-    strategy = strategyMapping(strategy);
+		strategy = strategyMapping(strategy);
 		if (error.name === 'StaleElementReferenceError') {
 			callback();
 		} else {
@@ -533,28 +553,28 @@ class MobileDriver {
 
 	async waitForCookie(title) {
 		let logCookie = '';
-    return this.driver.allCookies().then((cookies) => {
-      let isCookiePresent = false;
-      logCookie = JSON.stringify(cookies);
-      let targetCookieValue = "";
+		return this.driver.allCookies().then((cookies) => {
+			let isCookiePresent = false;
+			logCookie = JSON.stringify(cookies);
+			let targetCookieValue = "";
 
-      cookies.forEach((cookie) => {
-        if (cookie.name === title) {
-          isCookiePresent = true;
-          targetCookieValue = cookie.value;
-        }
-      });
-      //check if cookie exists; If yes, return the cookie value
-      if (isCookiePresent) {
-        return targetCookieValue;
-      } else {
-        throw new Error(`Cookie ${title} not found`);
-      }
-    }).catch(async (error) => {
-      error.message = `Error occurred in driver.waitForCookie("${title}")\n` + error.message;
-      error.message = error.message + `\nLast checked cookies are: "${logCookie}"`;
-      await this.processAndThrowError(error, new Error().stack);
-    });
+			cookies.forEach((cookie) => {
+				if (cookie.name === title) {
+					isCookiePresent = true;
+					targetCookieValue = cookie.value;
+				}
+			});
+			//check if cookie exists; If yes, return the cookie value
+			if (isCookiePresent) {
+				return targetCookieValue;
+			} else {
+				throw new Error(`Cookie ${title} not found`);
+			}
+		}).catch(async (error) => {
+			error.message = `Error occurred in driver.waitForCookie("${title}")\n` + error.message;
+			error.message = error.message + `\nLast checked cookies are: "${logCookie}"`;
+			await this.processAndThrowError(error, new Error().stack);
+		});
 	}
 
 	async getCookie(title) {
@@ -569,7 +589,7 @@ class MobileDriver {
 
 	async waitForCookieToClear(title) {
 		const isCookiePresent = (async function (title) {
-      const cookies = await this.driver.allCookies();
+			const cookies = await this.driver.allCookies();
 			if (cookies[title]) {
 				return false;
 			} else {
@@ -584,52 +604,58 @@ class MobileDriver {
 			});
 	}
 
-  async waitForCookieToEqual(title, value) {
-    let logCookie = '';
-    const getCookieValue = (async function (title) {
-      const cookieValue = await this.waitForCookie(title);
-      logCookie = cookieValue;
-      return logCookie;
-    }).bind(this);
+	async waitForCookieToEqual(title, value) {
+		let logCookie = '';
+		const getCookieValue = (async function (title) {
+			const cookieValue = await this.waitForCookie(title);
+			logCookie = cookieValue;
+			return logCookie;
+		}).bind(this);
 
-    await this.driver
-      .waitFor(asserters.jsCondition((await getCookieValue(title)) === value), this.timeout)
-      .catch(async error => {
-        error.message = `Error occurred in driver.waitForCookieToBeEqual("${title}", "${value}")\n` + error.message;
-        error.message = error.message + `\nLast checked cookie value: "${logCookie}"`;
-        await this.processAndThrowError(error, new Error().stack);
-      });
-  }
+		await this.driver
+			.waitFor(asserters.jsCondition((await getCookieValue(title)) === value), this.timeout)
+			.catch(async error => {
+				error.message = `Error occurred in driver.waitForCookieToBeEqual("${title}", "${value}")\n` + error.message;
+				error.message = error.message + `\nLast checked cookie value: "${logCookie}"`;
+				await this.processAndThrowError(error, new Error().stack);
+			});
+	}
 
-  async getContexts() {
-    return await this.driver.contexts();
-  }
+	async getContexts() {
+		return await this.driver.contexts();
+	}
 
-  async setContext(context) {
-    await this.driver.context(context);
-  }
+	async setContext(context) {
+		await this.driver.context(context);
+	}
 
-  async getElementCoordinates(strategy, locator) {
-    strategy = strategyMapping(strategy);
-    let element = await this.driver.waitForElements(strategy, locator, this.timeout);
-    return await this.driver.getLocation(element[0]);
-  }
+	async getElementCoordinates(strategy, locator) {
+		strategy = strategyMapping(strategy);
+		let element = await this.driver.waitForElements(strategy, locator, this.timeout);
+		return await this.driver.getLocation(element[0]);
+	}
 
-  async swipeByCoordinates(startX, startY, endX, endY) {
-    let action = new wd.TouchAction();
-    await action.press({x: startX, y: startY})
-      .wait(500)
-      .moveTo({x: endX, y: endY})
-      .release();
-    await this.driver.performTouchAction(action);
-  }
+	async swipeByCoordinates(startX, startY, endX, endY) {
+		let action = new wd.TouchAction();
+		await action.press({
+				x: startX,
+				y: startY
+			})
+			.wait(500)
+			.moveTo({
+				x: endX,
+				y: endY
+			})
+			.release();
+		await this.driver.performTouchAction(action);
+	}
 
-  async tapByCoordinates(x, y) {
-    await this.driver.execute("mobile:tap", {
-      x: x,
-      y: y
-    });
-  }
+	async tapByCoordinates(x, y) {
+		await this.driver.execute("mobile:tap", {
+			x: x,
+			y: y
+		});
+	}
 
 	// =============================================================================
 	// Private methods. Do not expose in d.ts
