@@ -39,6 +39,15 @@ function CustomWorld({ attach, parameters }) {
     throw new Error('Unknown browser used in desired capabilites');
   }
 
+  let appiumHub = {};
+  if (parameters.appiumAddress || parameters.appiumPort) {
+    appiumHub.address = parameters.appiumAddress;
+    appiumHub.port = (parameters.appiumPort) ? parseInt(parameters.appiumPort) : undefined;
+  } else {
+    appiumHub.address = 'localhost';
+    appiumHub.port = 4723;
+  }
+
   if (parameters.browser !== 'android' && parameters.browser !== 'ios') {
     const downloadPath = process.cwd() + '/downloads';
     if (!fs.existsSync(downloadPath)) {
@@ -118,17 +127,19 @@ function CustomWorld({ attach, parameters }) {
     }
     this.driver = new Driver(this.browser);
   } else if (parameters.browser === 'android') {
-    const emulatorName = getEmulatorName();
-    desiredCapabilities.avd = emulatorName;
-    desiredCapabilities.deviceName = emulatorName;
+    if (appiumHub.address === 'localhost') {
+      const emulatorName = getEmulatorName();
+      desiredCapabilities.avd = emulatorName;
+      desiredCapabilities.deviceName = emulatorName;
+    }
 
-    // for mobile browsers -- android chrome
-    this.browser = wdMobile.promiseChainRemote('localhost', 4723)
+    // for android web & app
+    this.browser = wdMobile.promiseChainRemote(appiumHub.address, appiumHub.port)
       .init(desiredCapabilities);
     this.driver = new MobileDriver(this.browser);
   } else if (parameters.browser === 'ios') {
-    // for mobile browsers -- ios safari
-    this.browser = wdMobile.promiseChainRemote('localhost', 4723)
+    // for ios web & app
+    this.browser = wdMobile.promiseChainRemote(appiumHub.address, appiumHub.port)
       .init(desiredCapabilities);
     this.driver = new MobileDriver(this.browser);
   }
@@ -136,6 +147,5 @@ function CustomWorld({ attach, parameters }) {
   global.driver = this.driver;
 }
 
-// module.exports = CustomWorld;
 setWorldConstructor(CustomWorld);
 setDefaultTimeout(120000);

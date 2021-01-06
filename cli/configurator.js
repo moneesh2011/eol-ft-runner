@@ -17,6 +17,7 @@ class Configurator {
             reportFolderPath: '',
             retry: '',
             rerun: '',
+            remoteAppiumHub: '',
             desiredCapabilities: ''
         };
 

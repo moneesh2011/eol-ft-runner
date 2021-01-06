@@ -8,7 +8,7 @@ const colors = require('colors');
 const { checkDriverCompatibility } = require('../utils/check-compatibility');
 const options = require('./cli-options');
 const Configurator = require('./configurator');
-const { processTags, processWorldParams, processCores } = require('../utils/modify-options');
+const { processTags, processWorldParams, processCores, mergeDesiredCaps } = require('../utils/modify-options');
 const { createFolder, mergeReports, removeRerunTxtFiles } = require('../utils/utility');
 const { startAppium, stopAppium } = require('../utils/appium-manager');
 const { exitAndroidEmulator, closeSimulatorApp } = require('../utils/emulator-manager');
@@ -31,12 +31,22 @@ async function getCucumberArgs() {
     const configOptions = new Configurator(argv).options;
     global.configOptions = configOptions;
     global.browsers = configOptions.browser;
+    global.remoteAppiumHub = configOptions.remoteAppiumHub;
     global.headless = argv.headless;
     global.retry = argv.retry || configOptions.retry;
     global.rerun = argv.rerun || configOptions.rerun;
 
-    if (configOptions.desiredCapabilities) {
-        env.desiredCaps = JSON.stringify(configOptions.desiredCapabilities);
+    let addDesiredCaps, mergedDesiredCaps;
+    addDesiredCaps = argv.addDesiredCaps;
+    if (addDesiredCaps) {
+        addDesiredCaps = JSON.parse(addDesiredCaps);
+        mergedDesiredCaps = await mergeDesiredCaps(configOptions.desiredCapabilities, addDesiredCaps);
+    } else {
+        mergedDesiredCaps  = {...configOptions.desiredCapabilities};
+    }
+
+    if (mergedDesiredCaps) {
+        env.desiredCaps = JSON.stringify(mergedDesiredCaps);
     }
 
     // get slack notification settings
@@ -59,7 +69,7 @@ async function getCucumberArgs() {
     let cukeArgs = [];
     for (i=0; i < configOptions.browser.length; i++) {
         const tags = await processTags(configOptions.browser[i], configOptions.tags);
-        const worldParams = await processWorldParams(configOptions.browser[i], global.headless);
+        const worldParams = await processWorldParams(configOptions.browser[i], global.headless, global.remoteAppiumHub);
         const cores = await processCores(configOptions.browser[i], configOptions.cores);
         
         cukeArgs.push([
@@ -103,9 +113,11 @@ async function execCommands(commands) {
             if (global.rerun) {
                 retryFailingTests();
             } else {
-                if (global.browsers.includes('android')) exitAndroidEmulator();
-                if (global.browsers.includes('ios')) closeSimulatorApp();
-                if (global.browsers.includes('android') || global.browsers.includes('ios')) stopAppium(global.appiumServer);
+                if (!global.remoteAppiumHub) {
+                    if (global.browsers.includes('android')) exitAndroidEmulator();
+                    if (global.browsers.includes('ios')) closeSimulatorApp();
+                    if (global.browsers.includes('android') || global.browsers.includes('ios')) stopAppium(global.appiumServer);
+                }
                 removeRerunTxtFiles();
             }
         });
@@ -129,18 +141,22 @@ async function execCommands(commands) {
 
 async function runCucumberTests() {
     const commands = await getCucumberArgs();
-    await checkDriverCompatibility(global.browsers);
+    await checkDriverCompatibility(global.browsers, env.desiredCaps);
     
     if (global.browsers.includes('android') || global.browsers.includes('ios')) {
-        console.log(`Mobile tests detected. Starting appium server...`.green);
-        global.appiumServer = startAppium(global.browsers);
-        waitForPort({ host: appiumConfig.appium.address, port: appiumConfig.appium.port }).then(open => {
-            if (open) {
-                execCommands(commands);
-            } else {
-                console.error('Appium not started');
-            }
-        });
+        if (!global.remoteAppiumHub) {
+            console.log(`Mobile tests detected. Starting appium server...`.green);
+            global.appiumServer = startAppium(global.browsers);
+            waitForPort({ host: appiumConfig.appium.address, port: appiumConfig.appium.port }).then(open => {
+                if (open) {
+                    execCommands(commands);
+                } else {
+                    console.error('Appium not started');
+                }
+            });
+        } else {
+            execCommands(commands);
+        }
     } else {
         execCommands(commands);
     }

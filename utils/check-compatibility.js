@@ -39,7 +39,7 @@ async function getCommand(browser) {
     }
 }
 
-async function checkDriverCompatibility(browsers) {
+async function checkDriverCompatibility(browsers, desiredCaps) {
     let _browsers = [];
     if (!Array.isArray(browsers)) {
         _browsers.push(browsers);
@@ -59,6 +59,15 @@ async function checkDriverCompatibility(browsers) {
         _browsers = await _.remove(_browsers, (value) => {
             return value !== "ios";
         });
+    }
+
+    if (_browsers.includes("android") && desiredCaps) {
+        if (isMobileAppSession(desiredCaps["android"])) {
+            console.log("No driver checks required for Android app session. Skipping..");
+            _browsers = await _.remove(_browsers, (value) => {
+                return value !== "android";
+            });
+        }
     }
 
     if (_browsers.includes("chrome") || _browsers.includes("firefox") || _browsers.includes("android") || _browsers.includes("ie") || _browsers.includes("edge")) {
@@ -129,6 +138,15 @@ async function setWinDriverPath(runner, browser) {
     }
     else {
         return runner;
+    }
+}
+
+async function isMobileAppSession(capability) {
+    if (!capability) return false;
+    if (Object.keys(capability).includes('app')) {
+        return true;
+    } else if (Object.keys(capability).includes('browserName')) {
+        return false;
     }
 }
 

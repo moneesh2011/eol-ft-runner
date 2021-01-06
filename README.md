@@ -77,6 +77,10 @@ In your package.json, the npm script `test` should point to the ft-runner execut
     "supportFolderPath": [ "test/support" ],
     "reportFolderPath": "test/reports",
     "rerun": true,
+    "remoteAppiumHub": {
+      "address": "https://www.example-cloud.com/wd/hub",
+      "port": 8081
+    },
     "desiredCapabilities": {
       "chrome": {
         "browserName": "chrome",

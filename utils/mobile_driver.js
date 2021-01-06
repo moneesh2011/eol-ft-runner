@@ -83,7 +83,7 @@ class MobileDriver {
 	}
 
 	async close() {
-		return this.driver.close();
+		return this.driver.quit();
 	}
 
 	async waitForElements(strategy, locator, timeout = this.timeout) {
