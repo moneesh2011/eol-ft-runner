@@ -50,9 +50,23 @@ async function mergeDesiredCaps(existingCaps, newCaps) {
     return mergedCaps;
 }
 
+async function isAppSession(caps) {
+    caps = JSON.parse(caps);
+    if (caps['android']) {
+        if (caps['android']['app']) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
 module.exports = {
     processTags: processTags,
     processWorldParams: processWorldParams,
     processCores: processCores,
-    mergeDesiredCaps: mergeDesiredCaps
+    mergeDesiredCaps: mergeDesiredCaps,
+    isAppSession: isAppSession
 };

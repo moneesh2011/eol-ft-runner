@@ -8,7 +8,7 @@ const colors = require('colors');
 const { checkDriverCompatibility } = require('../utils/check-compatibility');
 const options = require('./cli-options');
 const Configurator = require('./configurator');
-const { processTags, processWorldParams, processCores, mergeDesiredCaps } = require('../utils/modify-options');
+const { processTags, processWorldParams, processCores, mergeDesiredCaps, isAppSession } = require('../utils/modify-options');
 const { createFolder, mergeReports, removeRerunTxtFiles } = require('../utils/utility');
 const { startAppium, stopAppium } = require('../utils/appium-manager');
 const { exitAndroidEmulator, closeSimulatorApp } = require('../utils/emulator-manager');
@@ -146,6 +146,7 @@ async function runCucumberTests() {
     if (global.browsers.includes('android') || global.browsers.includes('ios')) {
         if (!global.remoteAppiumHub) {
             console.log(`Mobile tests detected. Starting appium server...`.green);
+            global.isAppSession = isAppSession(env.desiredCaps);
             global.appiumServer = startAppium(global.browsers);
             waitForPort({ host: appiumConfig.appium.address, port: appiumConfig.appium.port }).then(open => {
                 if (open) {

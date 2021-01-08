@@ -24,7 +24,7 @@ const startAppium = (browsers) => {
     JSON.stringify(appiumConfig.defaultCapabilities)
   ];
   
-  if (browsers.includes('android')) {
+  if (browsers.includes('android') && !global.isAppSession) {
     appiumArgs.push('--chromedriver-executable');
     appiumArgs.push(require('chromedriver').path);
   } 
