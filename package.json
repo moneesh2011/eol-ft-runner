@@ -4,6 +4,7 @@
   "description": "Application UI test runner that integration Selenium, Appium & CucumberJS for an all-round UI testing experince in Behaviour-driven development (BDD)",
   "main": "index.js",
   "scripts": {
+    "test": "jest",
     "ft": "./bin/ft-runner",
     "ft:win": "node bin/ft-runner",
     "generate:docmd": "jsdoc2md utils/driver.js > driver.md"
@@ -38,5 +39,9 @@
     "wait-port": "^0.2.9",
     "wd": "^1.13.0",
     "yargs": "^15.3.1"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "jest": "^26.6.3"
   }
 }
