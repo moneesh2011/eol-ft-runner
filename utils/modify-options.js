@@ -58,6 +58,12 @@ async function isAppSession(caps) {
         } else {
             return false;
         }
+    } else if (caps['ios']) {
+        if (caps['ios']['app']) {
+            return true;
+        } else {
+            return false;
+        }
     } else {
         return false;
     }
