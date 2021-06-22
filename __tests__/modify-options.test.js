@@ -476,7 +476,7 @@ describe("Modify Options", function () {
       };
       caps = JSON.stringify(caps);
 
-      const res = await isAppSession(caps);
+      const res = isAppSession(caps);
       expect(res).to.be.true;
     });
 
@@ -496,7 +496,7 @@ describe("Modify Options", function () {
       };
       caps = JSON.stringify(caps);
 
-      const res = await isAppSession(caps);
+      const res = isAppSession(caps);
       expect(res).to.be.false;
     });
 
@@ -512,7 +512,7 @@ describe("Modify Options", function () {
       };
       caps = JSON.stringify(caps);
 
-      const res = await isAppSession(caps);
+      const res = isAppSession(caps);
       expect(res).to.be.true;
     });
 
@@ -529,7 +529,7 @@ describe("Modify Options", function () {
       };
       caps = JSON.stringify(caps);
 
-      const res = await isAppSession(caps);
+      const res = isAppSession(caps);
       expect(res).to.be.false;
     });
 
@@ -542,7 +542,7 @@ describe("Modify Options", function () {
       };
       caps = JSON.stringify(caps);
 
-      const res = await isAppSession(caps);
+      const res = isAppSession(caps);
       expect(res).to.be.false;
     });
   });

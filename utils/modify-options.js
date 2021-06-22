@@ -50,7 +50,7 @@ async function mergeDesiredCaps(existingCaps, newCaps) {
     return mergedCaps;
 }
 
-async function isAppSession(caps) {
+function isAppSession(caps) {
     caps = JSON.parse(caps);
     if (caps['android']) {
         if (caps['android']['app']) {
