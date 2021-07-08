@@ -111,7 +111,7 @@ Create the `config.json` file anywhere in your project, and provide its relative
 ## CLI arguments
 |CLI argument|Description|Expected value type|Example|
 |----------|--------|----------|----|
-|`--config /path/to/config.json`|**Mandatory** configuration file that defines the location of feature, step-definition and hook files|String| _--config ./config,json_ |
+|`--config /path/to/config.json`|**Mandatory** configuration file that defines the location of feature, step-definition and hook files|String| _--config ./config.json_ |
 |`--browser [browsers]`|Specify the browser name for the session (can be 'chrome', 'firefox', 'safari', 'edge', 'android', 'ios')|String|_--browser chrome_ <br /> _--browser chrome firefox_ (for parallel execution)|
 |`--headless`|Attempt to run a headless session (applicable for Chrome, Firefox)| Boolean (optional)|  
 |`--tags <tags>`|Provide select cucumber tags to be executed|String|_e.g. --tags @sanity_ <br/> _e.g. --tags "@smoke @sanity"_ (for multiple tags)|
