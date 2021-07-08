@@ -72,7 +72,9 @@ In your package.json, the npm script `test` should point to the ft-runner execut
 
 `cores` are the number of parallel threads of execution specified in the format "--cores 3" or "--cores 10". Cores are optional, and will run on 2 cores if not specified. For Safari & Edge browsers, cores will be defaulted to 1 due to their respective [browser instance restrictions](https://github.com/SeleniumHQ/selenium/issues/5057).
 
-### Configuration file attributes
+<br/>
+
+## Configuration file attributes
 | Attribute name | Mandatory? | Type | Example |
 | -------------- | ---------- | ---- | ------- |
 | `featurePath` |  Yes | String | "./path/to/feature/dir" |
@@ -87,7 +89,7 @@ In your package.json, the npm script `test` should point to the ft-runner execut
 
 
 <details>
-  <summary> SAMPLE CONFIGURATION FILE </summary>
+  <summary> SAMPLE CONFIGURATION FILE (click to expand) </summary>
 
   ```json
   {
@@ -125,7 +127,9 @@ In your package.json, the npm script `test` should point to the ft-runner execut
 
 </details>
 
-Create the `config.json` file anywhere in your project, and provide its relative path as a command-line argument: `--config <relative_path_of_config.json>`. For Windows, replace all instances of forward-slashes(/) each with 2 backslashes(\\).  
+Create the `config.json` file anywhere in your project, and provide its relative path as a command-line argument: `--config <relative_path_of_config.json>`. For Windows, replace all instances of forward-slashes(/) each with 2 backslashes(\\).
+
+<br/>
 
 ## CLI arguments
 |CLI argument|Description|Expected value type|Example|
