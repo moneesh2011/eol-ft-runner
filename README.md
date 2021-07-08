@@ -121,7 +121,7 @@ Create the `config.json` file anywhere in your project, and provide its relative
 |`--retry <n>`|Cucumber-js native retry mechanism to run any failed test scenario(s)|Number| _--retry 3_|
 |`--webhookUrl <url>`|Slack webhook url for Slack notifications|String|_--webhookUrl https://webhookurl.slack.com/blah/_|
 |`--ciLinkTitle <title>`|Set title of the Slack message forwarded using Slack webhook URL|String|_--ciLinkTitle "Build 14"_|
-|`--ciLinkUrl <url>`|Set hyperlink URL for the slack title|String|_--ciLinkUrl "https://jenkins/url"_|
+|`--ciLinkUrl <url>`|Set hyperlink URL for the slack title|String|_--ciLinkUrl https://jenkins/url_|
 
 **Important:** key-value pairs passed via CLI arguments will override the same key-value pairs provided in the configuration json file. For example, `--browser chrome` CLI argument will override any **browser** attribute setting in the configuration file.
 
