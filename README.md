@@ -114,7 +114,7 @@ Create the `config.json` file anywhere in your project, and provide its relative
 |`--config /path/to/config.json`|**Mandatory** configuration file that defines the location of feature, step-definition and hook files|String| _--config ./config,json_ |
 |`--browser [browsers]`|Specify the browser name for the session (can be 'chrome', 'firefox', 'safari', 'edge', 'android', 'ios')|String|_--browser chrome_ <br /> _--browser chrome firefox_ (for parallel execution)|
 |`--headless`|Attempt to run a headless session (applicable for Chrome, Firefox)| Boolean (optional)|  
-|`--tags [tags]`|Provide select cucumber tags to be executed|String|_e.g. --tags @sanity_ <br/> _e.g. --tags "@smoke @sanity"_ (for multiple tags)|
+|`--tags <tags>`|Provide select cucumber tags to be executed|String|_e.g. --tags @sanity_ <br/> _e.g. --tags "@smoke @sanity"_ (for multiple tags)|
 |`--addDesiredCaps <desiredCapObject>`|Add an entirely new desired capability object or add new attributes to an existing desired capability object|Stringified JSON|_e.g. --addDesiredCap "{\\"ios\\":{\\"secretKey\\":\\"shhd0ntte11any1\\"}}"_|
 |`--rerun`|Re-execute all failing tests one more time|Boolean (optional)|
 |`--cores <n>`|Number of threads in execution during parallel run|Number (default: 2)| _--cores 4_|
