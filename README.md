@@ -72,40 +72,59 @@ In your package.json, the npm script `test` should point to the ft-runner execut
 
 `cores` are the number of parallel threads of execution specified in the format "--cores 3" or "--cores 10". Cores are optional, and will run on 2 cores if not specified. For Safari & Edge browsers, cores will be defaulted to 1 due to their respective [browser instance restrictions](https://github.com/SeleniumHQ/selenium/issues/5057).
 
-### Sample config.json file
-```json
-{
-  "configurations": {
-    "browser": [ "chrome" ],
-    "tags": "@sanity",
-    "featurePath": [ "test/features/" ],
-    "stepDefinitionPath": [ "test/step_definitions/" ],
-    "supportFolderPath": [ "test/support" ],
-    "reportFolderPath": "test/reports",
-    "rerun": true,
-    "remoteAppiumHub": {
-      "address": "https://www.example-cloud.com/wd/hub",
-      "port": 8081
-    },
-    "desiredCapabilities": {
-      "chrome": {
-        "browserName": "chrome",
-        "unhandledPromptBehavior": "accept"
+### Configuration file attributes
+| Attribute name | Mandatory? | Type | Example |
+| -------------- | ---------- | ---- | ------- |
+| `featurePath` |  Yes | String | "./path/to/feature/dir" |
+| `stepDefinitionPath` | Yes | String | "./path/to/step_def/dir" |
+| `supportFolderPath` | Yes | String | "./path/to/support/dir" |
+| `reportFolderPath` | Yes | String | "./path/to/report/dir" |
+| `browser` | No | Array of Strings | [ "chrome", "firefox" ] |
+| `tags` | No | String | "@sanity" <br/> "@sanity @smoke" |
+| `rerun` | No | Boolean | true |
+| `remoteAppiumHub` | No | Object | {<br/>"address": "https://www.example-cloud.com/wd/hub",<br/>"port": 8081<br/>} <br/> _port is optional_|
+| `desiredCapabilities` | No | Object | View below sample |
+
+
+<details>
+  <summary> SAMPLE CONFIGURATION FILE </summary>
+
+  ```json
+  {
+    "configurations": {
+      "browser": [ "chrome" ],
+      "tags": "@sanity",
+      "featurePath": [ "test/features/" ],
+      "stepDefinitionPath": [ "test/step_definitions/" ],
+      "supportFolderPath": [ "test/support" ],
+      "reportFolderPath": "test/reports",
+      "rerun": true,
+      "remoteAppiumHub": {
+        "address": "https://www.example-cloud.com/wd/hub",
+        "port": 8081
       },
-      "ios": {
-        "browserName": "Safari",
-        "platformName": "iOS",
-        "platformVersion": "14.1",
-        "deviceName": "iPhone 12",
-        "automationName": "XCUITest",
-        "startIWDP": true,
-        "newCommandTimeout": 30,
-        "safariAllowPopups": true
+      "desiredCapabilities": {
+        "chrome": {
+          "browserName": "chrome",
+          "unhandledPromptBehavior": "accept"
+        },
+        "ios": {
+          "browserName": "Safari",
+          "platformName": "iOS",
+          "platformVersion": "14.1",
+          "deviceName": "iPhone 12",
+          "automationName": "XCUITest",
+          "startIWDP": true,
+          "newCommandTimeout": 30,
+          "safariAllowPopups": true
+        }
       }
     }
   }
-}
-```
+  ```
+
+</details>
+
 Create the `config.json` file anywhere in your project, and provide its relative path as a command-line argument: `--config <relative_path_of_config.json>`. For Windows, replace all instances of forward-slashes(/) each with 2 backslashes(\\).  
 
 ## CLI arguments
