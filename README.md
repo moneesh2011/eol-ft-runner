@@ -77,15 +77,15 @@ In your package.json, the npm script `test` should point to the ft-runner execut
 ## Configuration file attributes
 | Attribute name | Mandatory? | Type | Example |
 | -------------- | ---------- | ---- | ------- |
-| `featurePath` |  Yes | String | "./path/to/feature/dir" |
-| `stepDefinitionPath` | Yes | String | "./path/to/step_def/dir" |
-| `supportFolderPath` | Yes | String | "./path/to/support/dir" |
-| `reportFolderPath` | Yes | String | "./path/to/report/dir" |
-| `browser` | No | Array of Strings | [ "chrome", "firefox" ] |
-| `tags` | No | String | "@sanity" <br/> "@sanity @smoke" |
-| `rerun` | No | Boolean | true |
-| `remoteAppiumHub` | No | Object | {<br/>"address": "https://www.example-cloud.com/wd/hub",<br/>"port": 8081<br/>} <br/> _port is optional_|
-| `desiredCapabilities` | No | Object | View below sample |
+| `featurePath` |  Yes | String | _"./path/to/feature/dir"_ |
+| `stepDefinitionPath` | Yes | String | _"./path/to/step_def/dir"_ |
+| `supportFolderPath` | Yes | String | _"./path/to/support/dir"_ |
+| `reportFolderPath` | Yes | String | _"./path/to/report/dir"_ |
+| `browser` | No | Array of Strings | _[ "chrome", "firefox" ]_ |
+| `tags` | No | String | _"@sanity" <br/> "@sanity @smoke"_ |
+| `rerun` | No | Boolean | _true_ |
+| `remoteAppiumHub` | No | Object | _{<br/>"address": "https://www.example-cloud.com/wd/hub",<br/>"port": 8081<br/>} <br/> port is optional_|
+| `desiredCapabilities` | No | Object | _View below sample_ |
 
 
 <details>
