@@ -1,6 +1,6 @@
 {
   "name": "eol-ft-runner",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "Application UI test runner that integration Selenium, Appium & CucumberJS for an all-round UI testing experince in Behaviour-driven development (BDD)",
   "main": "index.js",
   "scripts": {
@@ -42,6 +42,6 @@
   },
   "devDependencies": {
     "chai": "^4.3.4",
-    "jest": "^26.6.3"
+    "jest": "^27.2.5"
   }
 }
