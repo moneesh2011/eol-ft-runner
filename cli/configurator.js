@@ -18,7 +18,8 @@ class Configurator {
             retry: '',
             rerun: '',
             remoteAppiumHub: '',
-            desiredCapabilities: ''
+            desiredCapabilities: '',
+            parallelType: ''
         };
 
         this.setConfigFileObject();

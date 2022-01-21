@@ -35,6 +35,7 @@ async function getCucumberArgs() {
     global.headless = argv.headless;
     global.retry = argv.retry || configOptions.retry;
     global.rerun = argv.rerun || configOptions.rerun;
+    global.parallelType = argv.parallelType || configOptions.parallelType;
 
     let addDesiredCaps, mergedDesiredCaps;
     addDesiredCaps = argv.addDesiredCaps;
