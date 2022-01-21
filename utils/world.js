@@ -4,7 +4,7 @@ const chrome = require('selenium-webdriver/chrome');
 const firefox = require('selenium-webdriver/firefox');
 const safari = require('selenium-webdriver/safari');
 const edge = require('selenium-webdriver/edge');
-const { setWorldConstructor, setDefaultTimeout } = require('cucumber');
+const { setWorldConstructor, setDefaultTimeout } = require('@cucumber/cucumber');
 const fs = require('fs');
 
 const defaultCaps = require('./desired-capabilities');

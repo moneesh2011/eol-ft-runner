@@ -91,7 +91,8 @@ async function getCucumberArgs() {
             '--parallel',
             cores,
             '--world-parameters',
-            `${worldParams}`
+            `${worldParams}`,
+            '--publish-quiet'
         ]);
         if (global.retry) {
             cukeArgs[i].push('--retry', global.retry);

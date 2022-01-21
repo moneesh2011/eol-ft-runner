@@ -60,7 +60,8 @@ async function retryCommands(rerunFiles) {
             '--parallel',
             1,
             '--world-parameters',
-            `${worldParams}`
+            `${worldParams}`,
+            '--publish-quiet'
         ]);
         global.browsers.push(`${candidate.browser}-rerun`);
     }
