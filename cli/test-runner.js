@@ -14,6 +14,7 @@ const { startAppium, stopAppium } = require('../utils/appium-manager');
 const { exitAndroidEmulator, closeSimulatorApp } = require('../utils/emulator-manager');
 const { retryFailingTests } = require('./rerun-manager');
 const appiumConfig = require('../utils/appium-config');
+const { workerPools } = require('../utils/thread-pool/worker_pool');
 
 global.platform = process.platform;
 global.appiumServer = null;
@@ -74,7 +75,7 @@ async function getCucumberArgs() {
         const cores = await processCores(configOptions.browser[i], configOptions.cores);
         
         cukeArgs.push([
-            cucumberExePath,
+            global.cucumberExePath,
             path.normalize(`${global.projDir}/${configOptions.featurePath}`),
             '--require',
             path.normalize(`${global.projDir}/${configOptions.stepDefinitionPath}`),
@@ -161,11 +162,14 @@ async function runCucumberTests() {
             execCommands(commands);
         }
     } else {
-        execCommands(commands);
+        if (global.parallelType) {
+            workerPools(global.configOptions, commands).start();
+        } else {
+            execCommands(commands);
+        }
     }
 }
 
 module.exports = {
-    execCommands: execCommands,
     runCucumberTests: runCucumberTests
 };

@@ -7,33 +7,31 @@ const workerpool = require('workerpool');
 const { getScenarioWithTag } = require("./gherkin");
 const { groupByFeatures } = require('./grouping');
 
-function workerPools(configOptions) {
-    let taskPool, features = [];
+function workerPools(configOptions, commands) {
+    let taskPool, features = [], command = commands[0];
 
     if (configOptions && configOptions.tags !== undefined) {
-        const scenarios = getScenarioWithTag("/features", argv[3]);
+        const featurePath = `${global.projDir}/${configOptions.featurePath}`;
+        const scenarios = getScenarioWithTag(featurePath, configOptions.tags);
         const groupedFeatures = groupByFeatures(scenarios);
         for (feature of groupedFeatures) {
             features.push({
                 absFeaturePath: feature.featureFileName,
-                tag: argv[3]
+                tag: configOptions.tags
             });
         }
     }
     
-    console.log("features", features);
     if (features.length === 0) {
         console.error("No matching feature files found. Exiting!");
         process.exit(1);
     }
 
-    function init() {
-        taskPool = workerpool.pool(path.resolve(__dirname, 'worker.js'), {
-            minWorkers: 1,
-            maxWorkers: 2,
-            workerType: 'thread'
-        });
-    }
+    taskPool = workerpool.pool(path.resolve(__dirname, 'worker.js'), {
+        minWorkers: 2,
+        maxWorkers: 2,
+        workerType: 'thread'
+    });
 
     function start() {
         const done = _.after(features.length, () => {
@@ -44,14 +42,18 @@ function workerPools(configOptions) {
         for (let i=0; i < features.length; i++) {
             taskPool.proxy()
                 .then(async function(myWorker) {
-                    await myWorker.runCucumber((i+1), features[i]);
-                    done();
+                    await myWorker.runCucumber((i+1), features[i], command);
                 })
+                .then(() => done())
                 .catch(function(err) {
                     console.error(err);
                 });
         }
     }
+
+    return {
+        start: start
+    };
 }
 
 module.exports = {

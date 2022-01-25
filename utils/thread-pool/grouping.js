@@ -1,5 +1,5 @@
 function checkIfExists(target, key, val) {
-    let isFound = false
+    let isFound = false;
     target.forEach((t) => {
         if (t[key] === val) isFound = true;
     });
