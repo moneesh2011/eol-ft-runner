@@ -7,8 +7,8 @@ const workerpool = require('workerpool');
 const { getScenarioWithTag } = require("./gherkin");
 const { groupByFeatures } = require('./grouping');
 
-function workerPools(configOptions, commands) {
-    let taskPool, features = [], command = commands[0];
+function workerPools(configOptions, cukeOptions) {
+    let taskPool, features = [], cukeOption = cukeOptions[0]; //TODO: refactor to support iterations
 
     if (configOptions && configOptions.tags !== undefined) {
         const featurePath = `${global.projDir}/${configOptions.featurePath}`;
@@ -29,25 +29,25 @@ function workerPools(configOptions, commands) {
 
     taskPool = workerpool.pool(path.resolve(__dirname, 'worker.js'), {
         minWorkers: 2,
-        maxWorkers: 2,
+        maxWorkers: 2, //TODO: refactor to use core count
         workerType: 'thread'
     });
 
     function start() {
         const done = _.after(features.length, () => {
             console.log('********** COMPLETED **********'.rainbow);
-            taskPool.terminate();
         });
         
         for (let i=0; i < features.length; i++) {
             taskPool.proxy()
                 .then(async function(myWorker) {
-                    await myWorker.runCucumber((i+1), features[i], command);
+                    await myWorker.runCucumber((i+1), features[i], cukeOption); //TODO: refactor to consolidate features & cukeOption
                 })
                 .then(() => done())
                 .catch(function(err) {
                     console.error(err);
-                });
+                })
+                .then(() => taskPool.terminate());
         }
     }
 

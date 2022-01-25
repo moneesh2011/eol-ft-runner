@@ -6,15 +6,17 @@ const waitForPort = require('wait-port');
 const colors = require('colors');
 
 const { checkDriverCompatibility } = require('../utils/check-compatibility');
-const options = require('./cli-options');
-const Configurator = require('./configurator');
 const { processTags, processWorldParams, processCores, mergeDesiredCaps, isAppSession } = require('../utils/modify-options');
 const { createFolder, mergeReports, removeRerunTxtFiles } = require('../utils/utility');
 const { startAppium, stopAppium } = require('../utils/appium-manager');
 const { exitAndroidEmulator, closeSimulatorApp } = require('../utils/emulator-manager');
 const { retryFailingTests } = require('./rerun-manager');
-const appiumConfig = require('../utils/appium-config');
 const { workerPools } = require('../utils/thread-pool/worker_pool');
+const { cukeCommandBuilder } = require('./command-builder');
+
+const Configurator = require('./configurator');
+const appiumConfig = require('../utils/appium-config');
+const options = require('./cli-options');
 
 global.platform = process.platform;
 global.appiumServer = null;
@@ -68,51 +70,43 @@ async function getCucumberArgs() {
 
     createFolder(global.reportsPath);
 
-    let cukeArgs = [];
+    let cukeCommands = [], cukeOptions = [];
     for (i=0; i < configOptions.browser.length; i++) {
         const tags = await processTags(configOptions.browser[i], configOptions.tags);
         const worldParams = await processWorldParams(configOptions.browser[i], global.headless, global.remoteAppiumHub);
         const cores = await processCores(configOptions.browser[i], configOptions.cores);
         
-        cukeArgs.push([
-            global.cucumberExePath,
-            path.normalize(`${global.projDir}/${configOptions.featurePath}`),
-            '--require',
-            path.normalize(`${global.projDir}/${configOptions.stepDefinitionPath}`),
-            '--require',
-            path.normalize(`${global.nodeCwd}/../utils/hooks.js`),
-            '--require',
-            path.normalize(`${global.projDir}/${configOptions.supportFolderPath}`),
-            '--require',
-            path.normalize(`${global.nodeCwd}/../utils/world.js`),
-            '--tags',
-            `"${tags}"`,
-            '--format',
-            path.normalize(`json:${global.projDir}/${configOptions.reportFolderPath}/cucumber-report-${configOptions.browser[i]}.json`),
-            '--parallel',
-            cores,
-            '--world-parameters',
-            `${worldParams}`,
-            '--publish-quiet'
-        ]);
-        if (global.retry) {
-            cukeArgs[i].push('--retry', global.retry);
-        }
+        cukeOptions.push({
+            cukeExePath: global.cucumberExePath,
+            featurePath: path.normalize(`${global.projDir}/${configOptions.featurePath}`),
+            stepDefPath: path.normalize(`${global.projDir}/${configOptions.stepDefinitionPath}`),
+            hookPath: path.normalize(`${global.nodeCwd}/../utils/hooks.js`),
+            supportPath: path.normalize(`${global.projDir}/${configOptions.supportFolderPath}`),
+            worldPath: path.normalize(`${global.nodeCwd}/../utils/world.js`),
+            tags: `"${tags}"`,
+            reportFormat: path.normalize(`json:${global.projDir}/${configOptions.reportFolderPath}/cucumber-report-${configOptions.browser[i]}.json`),
+            cores: cores,
+            worldParams: `${worldParams}`,
+            retry: global.retry
+        });
+
+        cukeCommands.push(cukeCommandBuilder(cukeOptions[i]));
         if (global.rerun) {
-            cukeArgs[i].push(
+            cukeCommands[i].push(
                 '--format',
                 path.normalize(`rerun:${global.projDir}/${configOptions.reportFolderPath}/@rerun-${configOptions.browser[i]}.txt`)
             );
         }
     }
-    return cukeArgs;
+
+    return { cukeCommands, cukeOptions };
 }
 
 async function execCommands(commands) {
     try {
         const done = _.after(global.browsers.length, () => {
             console.log('********** COMPLETED **********'.rainbow);
-            mergeReports(global.browsers, global.reportsPath); //refactor cleanup to be called from here
+            mergeReports(global.browsers, global.reportsPath); //TODO: refactor cleanup to be called from here
             if (global.rerun) {
                 retryFailingTests();
             } else {
@@ -143,7 +137,7 @@ async function execCommands(commands) {
 }
 
 async function runCucumberTests() {
-    const commands = await getCucumberArgs();
+    const { cukeCommands, cukeOptions } = await getCucumberArgs();
     await checkDriverCompatibility(global.browsers, env.desiredCaps);
     
     if (global.browsers.includes('android') || global.browsers.includes('ios')) {
@@ -153,19 +147,19 @@ async function runCucumberTests() {
             global.appiumServer = startAppium(global.browsers);
             waitForPort({ host: appiumConfig.appium.address, port: appiumConfig.appium.port }).then(open => {
                 if (open) {
-                    execCommands(commands);
+                    execCommands(cukeCommands);
                 } else {
                     console.error('Appium not started');
                 }
             });
         } else {
-            execCommands(commands);
+            execCommands(cukeCommands);
         }
     } else {
         if (global.parallelType) {
-            workerPools(global.configOptions, commands).start();
+            workerPools(global.configOptions, cukeOptions).start();
         } else {
-            execCommands(commands);
+            execCommands(cukeCommands);
         }
     }
 }
