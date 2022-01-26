@@ -31,7 +31,7 @@ function workerPools(configOptions, cukeOptions) {
 
     taskPool = workerpool.pool(path.resolve(__dirname, 'worker.js'), {
         minWorkers: 2,
-        maxWorkers: 2, //TODO: refactor to use core count
+        maxWorkers: cukeOption.cores || 2,
         workerType: 'thread'
     });
 
@@ -43,10 +43,12 @@ function workerPools(configOptions, cukeOptions) {
         });
         
         for (let i=0; i < features.length; i++) {
-            browsers.push(`${global.browsers[0]}-${i+1}`);
+            let id = i + 1;
+            browsers.push(`${global.browsers[0]}-${id}`);
+
             taskPool.proxy()
                 .then(async function(myWorker) {
-                    await myWorker.runCucumber((i+1), features[i], cukeOption); //TODO: refactor to consolidate features & cukeOption
+                    await myWorker.runCucumber((id), features[i], cukeOption); //TODO: refactor to consolidate features & cukeOption
                 })
                 .then(() => done())
                 .catch(function(err) {
