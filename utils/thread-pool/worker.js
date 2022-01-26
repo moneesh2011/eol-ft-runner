@@ -8,6 +8,8 @@ const { cukeCommandBuilder } = require('../../cli/command-builder');
 async function runCucumber(id, feature, option) {
     let featurePath = feature.absFeaturePath.replace(`${process.cwd()}/`, '');
     option.featurePath = featurePath;
+    option.cores = null;
+    option.reportFormat = option.reportFormat.replace(".json", `-${id}.json`);
 
     let cukeRunCmd = cukeCommandBuilder(option);
     let command = cukeRunCmd.join(" ");

@@ -19,6 +19,8 @@ const browserImgSrc = {
   'edge-rerun': 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/edge-32.png'
 };
 
+const defaultBrowserImg = 'https://raw.githubusercontent.com/moneesh2011/browser-icons/master/icons/32/default.png';
+
 const getPlatformName = async (wd) => {
   let session = await wd.getSession();
   let caps = await session.getCapabilities();
@@ -86,7 +88,8 @@ const mergeReports = (browsers, reportsDir) => {
     waitForReport(jsonFile);
     const json = require(jsonFile);
     json.forEach(feature => {
-      feature.name = `<img src='${browserImgSrc[browser]}' /> ${feature.name}`;
+      feature.name = 
+        `<img src='${browserImgSrc[browser] || defaultBrowserImg}' /> ${feature.name}`;
       output.push(feature);
     });
   });

@@ -6,8 +6,10 @@ const workerpool = require('workerpool');
 
 const { getScenarioWithTag } = require("./gherkin");
 const { groupByFeatures } = require('./grouping');
+const { mergeReports } = require("../utility");
 
 function workerPools(configOptions, cukeOptions) {
+    console.info("v0.5.0: Using --parallelType flag is currently restricted to the first `browser` in the configuration file" .bgBlue);
     let taskPool, features = [], cukeOption = cukeOptions[0]; //TODO: refactor to support iterations
 
     if (configOptions && configOptions.tags !== undefined) {
@@ -34,11 +36,14 @@ function workerPools(configOptions, cukeOptions) {
     });
 
     function start() {
+        let browsers = [];
         const done = _.after(features.length, () => {
             console.log('********** COMPLETED **********'.rainbow);
+            mergeReports(browsers, global.reportsPath);
         });
         
         for (let i=0; i < features.length; i++) {
+            browsers.push(`${global.browsers[0]}-${i+1}`);
             taskPool.proxy()
                 .then(async function(myWorker) {
                     await myWorker.runCucumber((i+1), features[i], cukeOption); //TODO: refactor to consolidate features & cukeOption
