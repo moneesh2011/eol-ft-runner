@@ -61,5 +61,11 @@ module.exports = {
         demandOption: false,
         requiresArg: true,
         type: 'string'
+    },
+    parallelType: {
+        description: 'Used in parallel tests. Allow to run each feature file in a single thread. Expected values: "features" | "scenarios"',
+        demandOption: false,
+        requiresArg: true,
+        type: 'string'
     }
 }

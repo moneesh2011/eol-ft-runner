@@ -9,6 +9,7 @@ const { mergeReports, removeRerunTxtFiles } = require('../utils/utility');
 const { stopAppium } = require('../utils/appium-manager');
 const { exitAndroidEmulator, closeSimulatorApp } = require('../utils/emulator-manager');
 const { sendSlackNotification } = require('../notifications/slack');
+const { cukeCommandBuilder } = require('./command-builder');
 
 function getRerunFiles() {
     let markedForRerun = [];
@@ -38,30 +39,25 @@ function content(filePath) {
 
 async function retryCommands(rerunFiles) {
     global.browsers = [];
-    let reCommands = [];
+    let reCommands = [], cukeOptions = [];
     
     for(let j=0; j < rerunFiles.length; j++) {
         let candidate = rerunFiles[j];
         const worldParams = await processWorldParams(candidate.browser, global.headless);
     
-        reCommands.push([
-            global.cucumberExePath,
-            path.normalize(`${global.configOptions.reportFolderPath}/${candidate.file}`),
-            '--require',
-            path.normalize(`${global.projDir}/${global.configOptions.stepDefinitionPath}`),
-            '--require',
-            path.normalize(`${global.nodeCwd}/../utils/hooks.js`),
-            '--require',
-            path.normalize(`${global.projDir}/${global.configOptions.supportFolderPath}`),
-            '--require',
-            path.normalize(`${global.nodeCwd}/../utils/world.js`),
-            '--format',
-            path.normalize(`json:${global.projDir}/${global.configOptions.reportFolderPath}/cucumber-report-${candidate.browser}-rerun.json`),
-            '--parallel',
-            1,
-            '--world-parameters',
-            `${worldParams}`
-        ]);
+        cukeOptions.push({
+            cukeExePath: global.cucumberExePath,
+            featurePath: path.normalize(`${global.configOptions.reportFolderPath}/${candidate.file}`),
+            stepDefPath: path.normalize(`${global.projDir}/${global.configOptions.stepDefinitionPath}`),
+            hookPath: path.normalize(`${global.nodeCwd}/../utils/hooks.js`),
+            supportPath: path.normalize(`${global.projDir}/${global.configOptions.supportFolderPath}`),
+            worldPath: path.normalize(`${global.nodeCwd}/../utils/world.js`),
+            reportFormat: path.normalize(`json:${global.projDir}/${global.configOptions.reportFolderPath}/cucumber-report-${candidate.browser}-rerun.json`),
+            cores: 1,
+            worldParams: `${worldParams}`
+        });
+
+        reCommands.push(cukeCommandBuilder(cukeOptions[j]));
         global.browsers.push(`${candidate.browser}-rerun`);
     }
     return reCommands;
