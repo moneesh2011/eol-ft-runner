@@ -3,12 +3,10 @@ const errorHandler = require('./error-handler');
 
 After(async function(testcase) {
     if (testcase.result.status === Status.FAILED) {
-        var imgData = testcase.result.exception.screenshot;
-        if (imgData === undefined) {
-        imgData = await errorHandler.takeScreenshot(this.driver.driver);
-        }
-        await this.attach(testcase.result.exception.name);
-        await this.attach(testcase.result.exception.message);
+        let imgData = await errorHandler.takeScreenshot(this.driver.driver);
+        
+        await this.attach('TIME (in sec): ' + testcase.result.duration.seconds.toString());
+        await this.attach(testcase.result.message.toString());
         await this.attach('\nBROWSER LOGS:' + (await this.driver.getBrowserConsoleLogs()));
         await this.attach(new Buffer(imgData, 'base64'), 'image/png');
     }
