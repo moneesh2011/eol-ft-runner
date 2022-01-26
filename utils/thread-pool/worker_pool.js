@@ -30,7 +30,7 @@ function workerPools(configOptions, cukeOptions) {
     }
 
     taskPool = workerpool.pool(path.resolve(__dirname, 'worker.js'), {
-        minWorkers: 2,
+        minWorkers: 1,
         maxWorkers: cukeOption.cores || 2,
         workerType: 'thread'
     });

@@ -15,7 +15,7 @@ async function runCucumber(id, feature, option) {
     let command = cukeRunCmd.join(" ");
 
     console.info(`Task: ${id} has been started. Running cmd:`, command .green);
-    await execSync(command, { stdio: 'inherit' });
+    await execSync(command, { stdio: 'inherit' }); //TODO: Cleanup messy reporting
 }
 
 workerpool.worker({

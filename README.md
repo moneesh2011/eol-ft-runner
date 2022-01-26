@@ -83,6 +83,7 @@ In your package.json, the npm script `test` should point to the ft-runner execut
 | `reportFolderPath` | Yes | String | _"./path/to/report/dir"_ |
 | `browser` | No | Array of Strings | _[ "chrome", "firefox" ]_ |
 | `tags` | No | String | _"@sanity" <br/> "@sanity @smoke"_ |
+| `parallelType` | No | String | _"features"_ |
 | `rerun` | No | Boolean | _true_ |
 | `remoteAppiumHub` | No | Object | _{<br/>"address": "https://www.example-cloud.com/wd/hub",<br/>"port": 8081<br/>} <br/> port is optional_|
 | `desiredCapabilities` | No | Object | _View below sample_ |
@@ -138,6 +139,7 @@ Create the `config.json` file anywhere in your project, and provide its relative
 |`--browser [browsers]`|Specify the browser name for the session (can be 'chrome', 'firefox', 'safari', 'edge', 'android', 'ios')|String|_--browser chrome_ <br /> _--browser chrome firefox_ (for parallel execution)|
 |`--headless`|Attempt to run a headless session (applicable for Chrome, Firefox)| Boolean (optional)|  
 |`--tags <tags>`|Provide select cucumber tags to be executed|String|_e.g. --tags @sanity_ <br/> _e.g. --tags "@smoke @sanity"_ (for multiple tags)|
+|`--parallelType features`|Provide this flag to run scenarios from a single feature within the same thread|String|_e.g. --parallelType features_|
 |`--addDesiredCaps <desiredCapObject>`|Add an entirely new desired capability object or add new attributes to an existing desired capability object|Stringified JSON|_e.g. --addDesiredCap "{\\"ios\\":{\\"secretKey\\":\\"shhd0ntte11any1\\"}}"_|
 |`--rerun`|Re-execute all failing tests one more time|Boolean (optional)|
 |`--cores <n>`|Number of threads in execution during parallel run|Number (default: 2)| _--cores 4_|
