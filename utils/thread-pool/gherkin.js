@@ -10,6 +10,13 @@ function getFeatures(featuresPath) {
     return Finder.from(featuresPath).findFiles('*.feature');
 }
 
+function flattenTags(tagArray) {
+    if (tagArray.length) {
+        return _.map(tagArray, (tag) => tag.name);
+    }
+    return [];
+}
+
 function getScenarios(srcPath) {
     let uuidFn = Messages.IdGenerator.uuid();
     let builder = new Gherkin.AstBuilder(uuidFn);
@@ -24,7 +31,7 @@ function getScenarios(srcPath) {
             scenarios.push({
                 featureFileName: featurePath,
                 scenarioLocation: child.scenario.location.line,
-                tag: (child.scenario.tags.length) ? child.scenario.tags[0].name : ''
+                tag: flattenTags(child.scenario.tags)
             })
         }
     }
@@ -34,7 +41,7 @@ function getScenarios(srcPath) {
 function filterScenarioWithExclusionTags(scenarios, exclusionTag) {
     if (!exclusionTag) return scenarios;
     return _.filter(scenarios, 
-        (scene) => scene.tag.toLowerCase() !== exclusionTag);
+        (scene) => !_.includes(scene.tag, exclusionTag));
 }
 
 function getScenarioWithTag(featurePath, tags) {
@@ -49,7 +56,7 @@ function getScenarioWithTag(featurePath, tags) {
         const tagList = runTags.split(/ or /g);
         for (let tag of tagList)
             taggedScenarios.push(..._.filter(scenarios, 
-                (scenario) => scenario.tag.toLowerCase() === tag.trim()));
+                (scenario) => _.includes(scenario.tag, tag.trim())));
     }
     
     taggedScenarios = filterScenarioWithExclusionTags(taggedScenarios, excludeTag);
