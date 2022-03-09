@@ -53,7 +53,7 @@ function getScenarioWithTag(featurePath, tags) {
     if (!runTags) {
         taggedScenarios = scenarios;
     } else {
-        const tagList = runTags.split(/ or /g);
+        const tagList = runTags.split(/ /g);
         for (let tag of tagList)
             taggedScenarios.push(..._.filter(scenarios, 
                 (scenario) => _.includes(scenario.tag, tag.trim())));
