@@ -46,7 +46,7 @@ const createFolder = (reportsDir) => {
   }
 }
 
-const isJSON = (str) => {
+const isJSONParseable = (str) => {
   try {
     JSON.parse(str)
   } catch(e) {
@@ -114,5 +114,5 @@ module.exports = {
   mergeReports: mergeReports,
   createFolder: createFolder,
   removeRerunTxtFiles: removeRerunTxtFiles,
-  isJSON: isJSON
+  isJSONParseable: isJSONParseable
 };

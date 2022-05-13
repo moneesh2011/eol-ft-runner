@@ -7,7 +7,7 @@ const colors = require('colors');
 
 const { checkDriverCompatibility } = require('../utils/check-compatibility');
 const { processTags, processWorldParams, processCores, mergeDesiredCaps, isAppSession } = require('../utils/modify-options');
-const { createFolder, mergeReports, removeRerunTxtFiles, isJSON } = require('../utils/utility');
+const { createFolder, mergeReports, removeRerunTxtFiles, isJSONParseable } = require('../utils/utility');
 const { startAppium, stopAppium } = require('../utils/appium-manager');
 const { exitAndroidEmulator, closeSimulatorApp } = require('../utils/emulator-manager');
 const { retryFailingTests } = require('./rerun-manager');
@@ -40,7 +40,7 @@ async function getCucumberArgs() {
     global.parallelType = argv.parallelType || configOptions.parallelType;
     
     let remoteAppiumHub = argv.remoteAppiumHub || configOptions.remoteAppiumHub;
-    global.remoteAppiumHub = isJSON(remoteAppiumHub) ? remoteAppiumHub : JSON.parse(remoteAppiumHub);
+    global.remoteAppiumHub = isJSONParseable(remoteAppiumHub) ? JSON.parse(remoteAppiumHub) : remoteAppiumHub;
 
     let addDesiredCaps, mergedDesiredCaps;
     addDesiredCaps = argv.addDesiredCaps;
