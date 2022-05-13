@@ -34,7 +34,7 @@ async function getCucumberArgs() {
     const configOptions = new Configurator(argv).options;
     global.configOptions = configOptions;
     global.browsers = configOptions.browser;
-    global.remoteAppiumHub = configOptions.remoteAppiumHub;
+    global.remoteAppiumHub = argv.remoteAppiumHub || configOptions.remoteAppiumHub;
     global.headless = argv.headless;
     global.retry = argv.retry || configOptions.retry;
     global.rerun = argv.rerun || configOptions.rerun;

@@ -140,6 +140,7 @@ Create the `config.json` file anywhere in your project, and provide its relative
 |`--headless`|Attempt to run a headless session (applicable for Chrome, Firefox)| Boolean (optional)|  
 |`--tags <tags>`|Provide select cucumber tags to be executed|String|_e.g. --tags @sanity_ <br/> _e.g. --tags "@smoke @sanity"_ (for multiple tags)|
 |`--parallelType features`|Provide this flag to run scenarios from a single feature within the same thread|String|_e.g. --parallelType features_|
+|`--remoteAppiumHub <url>`|Provide this flag to override the appium url even if one is provided in the config file|String|_e.g. --remoteAppiumHub https://appium.samplehuburl.com/_|
 |`--addDesiredCaps <desiredCapObject>`|Add an entirely new desired capability object or add new attributes to an existing desired capability object|Stringified JSON|_e.g. --addDesiredCap "{\\"ios\\":{\\"secretKey\\":\\"shhd0ntte11any1\\"}}"_|
 |`--rerun`|Re-execute all failing tests one more time|Boolean (optional)|
 |`--cores <n>`|Number of threads in execution during parallel run|Number (default: 2)| _--cores 4_|
