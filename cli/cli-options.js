@@ -67,5 +67,11 @@ module.exports = {
         demandOption: false,
         requiresArg: true,
         type: 'string'
+    },
+    remoteAppiumHub: {
+        description: 'Allow to update remoteAppiumHub Url for mobile farm execution',
+        demandOption: false,
+        requiresArg: true,
+        type: 'string'
     }
 }
