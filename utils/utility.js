@@ -46,6 +46,15 @@ const createFolder = (reportsDir) => {
   }
 }
 
+const isJSON = (str) => {
+  try {
+    JSON.parse(str)
+  } catch(e) {
+    return false;
+  }
+  return true;
+}
+
 const cleanup = (browsers, reportsPath) => {
   browsers.forEach(browser => {
     fs.unlinkSync(`${reportsPath}/cucumber-report-${browser}.json`);
@@ -104,5 +113,6 @@ module.exports = {
   getBrowserName: getBrowserName,
   mergeReports: mergeReports,
   createFolder: createFolder,
-  removeRerunTxtFiles: removeRerunTxtFiles
+  removeRerunTxtFiles: removeRerunTxtFiles,
+  isJSON: isJSON
 };
