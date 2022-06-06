@@ -71,6 +71,7 @@ async function getCucumberArgs() {
     global.reportsPath = path.normalize(global.projDir + "/" + configOptions.reportFolderPath);
 
     createFolder(global.reportsPath);
+    createFolder(global.projDir + '/downloads');
 
     let cukeCommands = [], cukeOptions = [];
     for (i=0; i < configOptions.browser.length; i++) {

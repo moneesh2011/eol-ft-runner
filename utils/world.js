@@ -49,12 +49,9 @@ function CustomWorld({ attach, parameters }) {
   }
 
   if (parameters.browser !== 'android' && parameters.browser !== 'ios') {
-    const downloadPath = process.cwd() + '/downloads';
-    if (!fs.existsSync(downloadPath)) {
-      fs.mkdirSync(downloadPath);
-    }
     // for desktop browsers -- chrome, firefox, safari, ie
     // chrome options can be found here: /Users/<username>/Library/Application%20Support/Google/Chrome/Default/Preferences
+    const downloadPath = process.cwd() + '/downloads';
     const commonChromeOptions = new chrome.Options().windowSize({ width: 1920, height: 1080 }).setUserPreferences({
       download: { prompt_for_download: false, default_directory: downloadPath }
     });
