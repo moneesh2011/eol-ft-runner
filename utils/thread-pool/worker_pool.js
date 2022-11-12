@@ -54,15 +54,18 @@ function workerPools(configOptions, cukeOptions) {
                 .then(() => done())
                 .catch(function(err) {
                     console.error(err);
+                    done();
                 })
             );
-
-            Promise.all(promises)
-                .then(() => taskPool.terminate())
-                .catch(function(err) {
-                    console.log("error", err);
-                });
         }
+
+        Promise.all(promises)
+            .then(async function () {
+                await taskPool.terminate();
+            })
+            .catch(function(err) {
+                console.log("error", err);
+            });
     }
 
     return {
