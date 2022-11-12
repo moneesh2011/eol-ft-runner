@@ -156,13 +156,13 @@ async function runCucumberTests() {
                 }
             });
         } else {
-            execCommands(cukeCommands);
+            await execCommands(cukeCommands);
         }
     } else {
         if (global.parallelType) {
-            workerPools(global.configOptions, cukeOptions).start();
+            await workerPools(global.configOptions, cukeOptions).start();
         } else {
-            execCommands(cukeCommands);
+            await execCommands(cukeCommands);
         }
     }
 }
