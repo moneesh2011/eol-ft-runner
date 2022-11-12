@@ -37,6 +37,7 @@ function workerPools(configOptions, cukeOptions) {
 
     function start() {
         let browsers = [];
+        let promises = [];
         const done = _.after(features.length, () => {
             console.log('********** COMPLETED **********'.rainbow);
             mergeReports(browsers, global.reportsPath);
@@ -46,7 +47,7 @@ function workerPools(configOptions, cukeOptions) {
             let id = i + 1;
             browsers.push(`${global.browsers[0]}-${id}`);
 
-            taskPool.proxy()
+            promises.push(taskPool.proxy()
                 .then(async function(myWorker) {
                     await myWorker.runCucumber((id), features[i], cukeOption); //TODO: refactor to consolidate features & cukeOption
                 })
@@ -54,7 +55,13 @@ function workerPools(configOptions, cukeOptions) {
                 .catch(function(err) {
                     console.error(err);
                 })
-                .then(() => taskPool.terminate());
+            );
+
+            Promise.all(promises)
+                .then(() => taskPool.terminate())
+                .catch(function(err) {
+                    console.log("error", err);
+                });
         }
     }
 
